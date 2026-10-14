@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SuperBook</title>
+  <meta name="description" content="Read the Tanakh, the Bible and the Qur'an side by side, and ask how they differ.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="sky" aria-hidden="true"><div class="sun"></div></div>
+  <svg class="dunes" viewBox="0 0 1440 320" preserveAspectRatio="none" aria-hidden="true">
+    <path class="far"  d="M0 210 C 220 120 380 170 560 150 C 760 128 900 60 1100 120 C 1250 165 1360 140 1440 120 L1440 320 L0 320 Z"/>
+    <path class="mid"  d="M0 250 C 180 200 320 230 520 205 C 700 182 860 230 1040 200 C 1220 170 1330 210 1440 196 L1440 320 L0 320 Z"/>
+  </svg>
+
+  <header>
+    <h1>SuperBook</h1>
+    <p>Three sacred books of the Abrahamic faiths. Open a book to read it, or ask the sand how they differ.</p>
+  </header>
+
+  <main>
+    <section class="shelf" aria-label="Books">
+      <button class="book tanakh" data-book="tanakh" aria-label="Open the Tanakh">
+        <span class="spine"></span>
+        <svg class="emblem" viewBox="0 0 100 100" aria-hidden="true">
+          <polygon points="50,8 86,71 14,71" /><polygon points="50,92 14,29 86,29" />
+        </svg>
+        <span class="title">Tanakh</span>
+        <span class="faith">Judaism</span>
+      </button>
+
+      <button class="book bible" data-book="bible" aria-label="Open the Holy Bible">
+        <span class="spine"></span>
+        <svg class="emblem" viewBox="0 0 100 100" aria-hidden="true">
+          <path d="M43 8 h14 v24 h20 v14 h-20 v46 h-14 v-46 h-20 v-14 h20 z" />
+        </svg>
+        <span class="title">Holy Bible</span>
+        <span class="faith">Christianity</span>
+      </button>
+
+      <button class="book quran" data-book="quran" aria-label="Open the Qur'an">
+        <span class="spine"></span>
+        <svg class="emblem" viewBox="0 0 100 100" aria-hidden="true">
+          <rect x="22" y="22" width="56" height="56" /><rect x="22" y="22" width="56" height="56" transform="rotate(45 50 50)" />
+          <circle cx="50" cy="50" r="10" />
+        </svg>
+        <span class="title">Qur'an</span>
+        <span class="faith">Islam</span>
+      </button>
+    </section>
+
+    <section class="ask" aria-labelledby="askTitle">
+      <h2 id="askTitle">Ask the sand</h2>
+      <form id="askForm">
+        <input id="question" type="text" placeholder="e.g. How do the three books see Jesus?" autocomplete="off" aria-label="Your question">
+        <button type="submit">Ask</button>
+      </form>
+      <div id="chips" class="chips"></div>
+    </section>
+
+    <section id="sandWrap" class="sand-wrap" hidden>
+      <canvas id="sand" aria-hidden="true"></canvas>
+      <p id="spoken" class="visually-hidden" aria-live="polite"></p>
+      <button id="smooth" class="smooth">Let the wind smooth the sand</button>
+      <p class="note">Simplified overview. Beliefs and practices vary within each tradition.</p>
+    </section>
+  </main>
+
+  <dialog id="reader" class="reader">
+    <div class="page">
+      <header class="reader-head">
+        <div>
+          <h2 id="readerTitle"></h2>
+          <p id="readerFaith" class="muted"></p>
+        </div>
+        <button id="close" class="close" aria-label="Close book">✕</button>
+      </header>
+      <nav class="reader-nav">
+        <label><span id="sectionLabel">Book</span> <select id="section"></select></label>
+        <label id="chapterWrap">Chapter <select id="chapter"></select></label>
+        <label id="originalWrap" class="toggle"><input type="checkbox" id="original" checked> Original language</label>
+        <span class="arrows"><button id="prev" aria-label="Previous">‹</button><button id="next" aria-label="Next">›</button></span>
+      </nav>
+      <article id="verses" class="verses"></article>
+      <footer id="credit" class="credit"></footer>
+    </div>
+  </dialog>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
