@@ -8,11 +8,64 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="sky" aria-hidden="true"><div class="sun"></div></div>
-  <svg class="dunes" viewBox="0 0 1440 320" preserveAspectRatio="none" aria-hidden="true">
-    <path class="far"  d="M0 210 C 220 120 380 170 560 150 C 760 128 900 60 1100 120 C 1250 165 1360 140 1440 120 L1440 320 L0 320 Z"/>
-    <path class="mid"  d="M0 250 C 180 200 320 230 520 205 C 700 182 860 230 1040 200 C 1220 170 1330 210 1440 196 L1440 320 L0 320 Z"/>
-  </svg>
+  <!-- Epic desert at dusk: original artwork in the spirit of classic animated Egyptian epics -->
+  <div class="scene" aria-hidden="true">
+    <div class="sky"></div>
+    <div class="rays"></div>
+    <div class="sun"></div>
+    <svg class="land" viewBox="0 0 1440 640" preserveAspectRatio="xMidYMax slice">
+      <defs>
+        <linearGradient id="nile" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffcf7a"/><stop offset=".45" stop-color="#e0703a"/><stop offset="1" stop-color="#5b2340"/>
+        </linearGradient>
+        <linearGradient id="dune1" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#e79b55"/><stop offset="1" stop-color="#b8612f"/>
+        </linearGradient>
+        <linearGradient id="dune2" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#f0b46a"/><stop offset="1" stop-color="#d48a47"/>
+        </linearGradient>
+        <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffb070" stop-opacity="0"/><stop offset="1" stop-color="#ffb070" stop-opacity=".55"/>
+        </linearGradient>
+      </defs>
+      <!-- distant cliffs -->
+      <path fill="#7a3550" d="M0 330 L90 300 L170 318 L260 280 L330 300 L420 270 L470 296 L560 286 L600 300 L0 300 Z M0 300 L0 360 L600 360 L600 300 Z"/>
+      <path fill="#86405a" d="M880 300 L960 270 L1040 292 L1120 262 L1200 288 L1290 266 L1380 296 L1440 284 L1440 360 L880 360 Z"/>
+      <!-- pyramids, far and near -->
+      <path fill="#9a4a5e" d="M150 352 L265 238 L380 352 Z"/><path fill="#7e3a50" d="M265 238 L380 352 L300 352 Z"/>
+      <path fill="#a4566a" d="M330 352 L410 272 L490 352 Z"/><path fill="#88445a" d="M410 272 L490 352 L436 352 Z"/>
+      <path fill="#91475d" d="M1030 352 L1180 202 L1330 352 Z"/><path fill="#743248" d="M1180 202 L1330 352 L1225 352 Z"/>
+      <!-- temple colonnade and obelisks -->
+      <g fill="#5e2442">
+        <rect x="560" y="300" width="300" height="56"/><rect x="548" y="290" width="324" height="14"/>
+        <rect x="574" y="304" width="14" height="52" fill="#4c1b37"/><rect x="612" y="304" width="14" height="52" fill="#4c1b37"/>
+        <rect x="650" y="304" width="14" height="52" fill="#4c1b37"/><rect x="756" y="304" width="14" height="52" fill="#4c1b37"/>
+        <rect x="794" y="304" width="14" height="52" fill="#4c1b37"/><rect x="832" y="304" width="14" height="52" fill="#4c1b37"/>
+        <path d="M688 356 L688 262 L732 262 L732 356 Z"/><path d="M680 262 L740 262 L728 246 L692 246 Z"/>
+        <path d="M520 356 L526 214 L532 204 L538 214 L544 356 Z"/><path d="M890 356 L896 196 L902 186 L908 196 L914 356 Z"/>
+      </g>
+      <!-- haze over the horizon -->
+      <rect x="0" y="250" width="1440" height="110" fill="url(#haze)"/>
+      <!-- the Nile, catching the sunset -->
+      <path fill="url(#nile)" d="M0 362 C 240 352 420 372 640 364 C 860 356 1100 372 1440 360 L1440 402 C 1120 414 880 396 640 404 C 420 412 220 396 0 406 Z"/>
+      <path fill="#fff1c4" opacity=".55" d="M960 372 h120 v3 h-120z M940 382 h170 v3 h-170z M975 392 h95 v2 h-95z"/>
+      <!-- palms along the river -->
+      <g fill="#3d1530">
+        <path d="M120 404 q6 -46 2 -78 l5 0 q4 34 -1 78z"/><path d="M124 328 q-30 -6 -48 8 q26 -2 48 -4z M124 328 q30 -10 50 4 q-24 -2 -50 -2z M124 328 q-14 -22 -36 -24 q18 10 34 26z M124 328 q16 -20 38 -18 q-20 6 -36 20z"/>
+        <path d="M196 404 q4 -36 0 -60 l4 0 q4 26 0 60z"/><path d="M198 344 q-24 -4 -38 6 q20 -2 38 -3z M198 344 q24 -8 40 4 q-20 -2 -40 -1z M198 344 q-10 -18 -28 -20 q14 8 26 22z"/>
+        <path d="M1300 404 q-6 -44 -1 -72 l5 0 q-3 32 2 72z"/><path d="M1302 334 q-28 -6 -46 8 q24 -2 46 -4z M1302 334 q28 -10 48 4 q-22 -2 -48 -2z M1302 334 q-12 -22 -34 -24 q18 10 32 26z M1302 334 q16 -20 36 -18 q-18 6 -34 20z"/>
+      </g>
+      <!-- ibises crossing the sun -->
+      <g fill="none" stroke="#4a1b34" stroke-width="2.4" stroke-linecap="round">
+        <path d="M1010 150 q10 -8 20 0 q10 -8 20 0"/><path d="M1060 128 q8 -6 16 0 q8 -6 16 0"/><path d="M968 176 q7 -5 14 0 q7 -5 14 0"/>
+      </g>
+      <!-- dunes in the foreground -->
+      <path fill="url(#dune1)" d="M0 420 C 200 384 380 430 600 410 C 820 390 1000 440 1200 414 C 1320 398 1400 410 1440 404 L1440 640 L0 640 Z"/>
+      <path fill="url(#dune2)" d="M0 470 C 240 436 420 486 700 462 C 960 440 1160 492 1440 456 L1440 640 L0 640 Z"/>
+      <path fill="#c97a3c" opacity=".35" d="M700 462 C 960 440 1160 492 1440 456 L1440 476 C 1160 510 960 462 700 478 Z"/>
+    </svg>
+    <div class="dust"></div>
+  </div>
 
   <header>
     <h1>SuperBook</h1>

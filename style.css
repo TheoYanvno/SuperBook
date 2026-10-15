@@ -1,20 +1,33 @@
 :root { --sand: #e9c38a; --sand-dark: #d4a462; --ink: #3b2614; --gold: #e8c46a; }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-html { background: #e7bf86; }
+html { background: #c47a3e; }
 body { margin: 0; min-height: 100vh; font-family: Georgia, "Times New Roman", serif; color: var(--ink); position: relative; overflow-x: hidden;
-       background: linear-gradient(#e2b97d, #d9ab6c 60%, #c99757); }
-.sky { position: absolute; inset: 0 0 auto 0; height: 420px; background: linear-gradient(#7fb6de, #f4d9a6 85%); z-index: 0; }
-.sun { position: absolute; top: 60px; right: 12%; width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(#fff6d6, #ffd877 60%, rgba(255, 200, 90, 0) 72%); filter: blur(1px); }
-.dunes { position: absolute; top: 230px; left: 0; width: 100%; height: 200px; z-index: 0; }
+       background: linear-gradient(#d48a47 0, #cf8545 640px, #c47a3e 1200px, #b56c35); }
+
+/* ---------- Dusk over the Nile ---------- */
+.scene { position: absolute; inset: 0 0 auto 0; height: 640px; overflow: hidden; z-index: 0; }
+.sky { position: absolute; inset: 0; background: linear-gradient(#1d1442 0%, #4a1f4f 16%, #8e2e45 34%, #d9542e 52%, #f59a3c 64%, #ffd27a 74%, #ffe7a8 80%); }
+.sun { position: absolute; left: 70%; top: 205px; width: 300px; height: 300px; margin-left: -150px; border-radius: 50%;
+       background: radial-gradient(circle, #fffbe8 0 26%, #ffe08a 40%, rgba(255, 170, 70, .55) 56%, rgba(255, 140, 60, 0) 70%); }
+.rays { position: absolute; left: 70%; top: 355px; width: 2400px; height: 2400px; margin: -1200px 0 0 -1200px; opacity: .22; mix-blend-mode: screen;
+        background: repeating-conic-gradient(from 0deg, rgba(255, 230, 170, .9) 0 3deg, transparent 3deg 11deg);
+        -webkit-mask-image: radial-gradient(circle, #000 0, transparent 46%); mask-image: radial-gradient(circle, #000 0, transparent 46%);
+        animation: turn 240s linear infinite; }
+.land { position: absolute; left: 0; bottom: 0; width: 100%; height: 640px; }
+.dust { position: absolute; inset: 0; opacity: .5; pointer-events: none;
+        background-image: radial-gradient(rgba(255, 230, 180, .8) 1px, transparent 1.5px), radial-gradient(rgba(255, 210, 150, .6) 1px, transparent 1.5px);
+        background-size: 170px 130px, 230px 190px; background-position: 0 0, 60px 40px; animation: drift 60s linear infinite; }
+@keyframes turn { to { transform: rotate(360deg); } }
+@keyframes drift { to { background-position: 680px -260px, 520px -380px; } }
+@media (prefers-reduced-motion: reduce) { .rays, .dust { animation: none; } }
 header, main { position: relative; z-index: 1; }
-.dunes .far { fill: #e8c48c; } .dunes .mid { fill: #e2b97d; }
 body::after { content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .18; z-index: 5;
   background-image: radial-gradient(rgba(90, 55, 20, .5) 0.6px, transparent 0.7px); background-size: 4px 4px; }   /* sand grain texture */
 
 header { text-align: center; padding: 40px 16px 10px; }
-header h1 { margin: 0; font-size: clamp(2.4rem, 7vw, 4rem); letter-spacing: .06em; color: #fff8e6; text-shadow: 0 2px 0 #a8732f, 0 6px 18px rgba(80, 40, 0, .35); }
-header p { margin: 8px auto 0; max-width: 560px; color: #4a3015; }
+header h1 { margin: 0; font-size: clamp(2.4rem, 7vw, 4rem); letter-spacing: .06em; color: #ffe9b8; text-shadow: 0 2px 0 #8a3b22, 0 6px 22px rgba(40, 10, 30, .6); }
+header p { margin: 8px auto 0; max-width: 560px; color: #fff3dc; text-shadow: 0 1px 3px rgba(40, 10, 20, .7); }
 main { max-width: 1000px; margin: 0 auto; padding: 0 16px 60px; }
 
 .shelf { display: flex; justify-content: center; align-items: flex-end; gap: clamp(14px, 4vw, 48px); padding: 120px 0 30px; flex-wrap: wrap; }
