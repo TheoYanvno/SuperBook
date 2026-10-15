@@ -110,3 +110,14 @@ main { max-width: 1000px; margin: 0 auto; padding: 0 16px 60px; }
   .facts .row-label { grid-column: 1 / -1; padding-bottom: 0; border-bottom: 0; margin-top: 4px; }
   .facts > div { padding: 6px; }
 }
+
+/* Music toggle */
+.music-toggle { position: fixed; right: 16px; bottom: 16px; z-index: 20; display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: .9rem;
+  padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(255, 232, 190, .5); background: rgba(40, 14, 30, .72); color: #ffe9c4; cursor: pointer;
+  backdrop-filter: blur(4px); box-shadow: 0 4px 14px rgba(40, 10, 20, .35); }
+.music-toggle:hover { background: rgba(60, 20, 40, .85); }
+.music-toggle .music-icon { display: inline-block; font-size: 1.1rem; }
+.music-toggle[aria-pressed="true"] { border-color: #ffd27a; }
+.music-toggle[aria-pressed="true"] .music-icon { animation: sway 2.4s ease-in-out infinite alternate; color: #ffd27a; }
+@keyframes sway { from { transform: translateY(1px) rotate(-8deg); } to { transform: translateY(-2px) rotate(8deg); } }
+@media (prefers-reduced-motion: reduce) { .music-toggle .music-icon { animation: none !important; } }

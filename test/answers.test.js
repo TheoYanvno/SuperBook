@@ -102,3 +102,12 @@ test('book tables have the expected size', () => {
   assert.strictEqual(BIBLE.reduce((n, [, c]) => n + c, 0), 1189);
   assert.strictEqual(TANAKH.length, 39);   // 39 books as Sefaria lists them = the traditional 24
 });
+
+test('ambience uses the D Hijaz scale and correct pitches', async () => {
+  const { frequency, scaleNote, HIJAZ, PROGRESSION } = await import('../src/music.js');
+  assert.strictEqual(frequency(69), 440);
+  assert.strictEqual(Math.round(frequency(50) * 100) / 100, 146.83);     // D3
+  assert.deepStrictEqual([0, 1, 2, 3, 4, 5, 6, 7].map((n) => scaleNote(n) - 50), [0, 1, 4, 5, 7, 8, 10, 12]);
+  assert.strictEqual(HIJAZ.length, 7);
+  for (const chord of PROGRESSION) assert.ok(chord.every((d) => Number.isInteger(d)));
+});

@@ -1,6 +1,7 @@
 import { BOOKS } from './books.js';
 import { answer, SUGGESTIONS } from './answers.js';
 import { SandWriter } from './sand.js';
+import { DesertAmbience } from './music.js';
 import { FACTS } from './facts.js';
 
 const $ = (id) => document.getElementById(id);
@@ -139,3 +140,27 @@ $('compareToggle').onclick = () => {
   $('compareToggle').setAttribute('aria-expanded', String(open));
   if (open) { renderFacts(); $('compare').scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' }); }
 };
+
+// ---------- Background music (generated in the browser, off until you turn it on) ----------
+const ambience = new DesertAmbience();
+const PREF = 'superbook-music';
+const remember = (on) => { try { localStorage.setItem(PREF, on ? 'on' : 'off'); } catch { /* storage may be blocked */ } };
+const wanted = () => { try { return localStorage.getItem(PREF) === 'on'; } catch { return false; } };
+
+function setMusic(on) {
+  $('music').setAttribute('aria-pressed', String(on));
+  $('music').querySelector('.label').textContent = on ? 'Music on' : 'Music off';
+  if (on) ambience.start(); else ambience.stop();
+}
+$('music').onclick = () => {
+  const on = $('music').getAttribute('aria-pressed') !== 'true';
+  remember(on);
+  setMusic(on);
+};
+// Browsers only allow sound after a click or key press, so a returning listener's music
+// starts on their first interaction with the page.
+if (wanted()) {
+  const resume = (e) => { if (!e.target.closest?.('#music')) setMusic(true); };
+  addEventListener('pointerdown', resume, { once: true });
+  addEventListener('keydown', resume, { once: true });
+}
