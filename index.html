@@ -16,7 +16,7 @@
 
   <header>
     <h1>SuperBook</h1>
-    <p>Three sacred books of the Abrahamic faiths. Open a book to read it, or ask the sand how they differ.</p>
+    <p>Three sacred books of the Abrahamic faiths. Open a book to read it, ask the sand a question, or compare them side by side.</p>
   </header>
 
   <main>
@@ -53,10 +53,23 @@
     <section class="ask" aria-labelledby="askTitle">
       <h2 id="askTitle">Ask the sand</h2>
       <form id="askForm">
-        <input id="question" type="text" placeholder="e.g. How do the three books see Jesus?" autocomplete="off" aria-label="Your question">
+        <input id="question" type="text" placeholder="Ask anything, e.g. How do the Bible and the Qur'an see Jesus?" autocomplete="off" aria-label="Your question">
         <button type="submit">Ask</button>
       </form>
       <div id="chips" class="chips"></div>
+      <button id="compareToggle" class="compare-toggle" aria-expanded="false" aria-controls="compare">Compare the books side by side</button>
+    </section>
+
+    <section id="compare" class="compare" hidden aria-labelledby="compareTitle">
+      <h2 id="compareTitle">The books side by side</h2>
+      <fieldset class="pick">
+        <legend>Show</legend>
+        <label><input type="checkbox" value="tanakh" checked> Tanakh</label>
+        <label><input type="checkbox" value="bible" checked> Bible</label>
+        <label><input type="checkbox" value="quran" checked> Qur'an</label>
+      </fieldset>
+      <div id="facts" class="facts" role="table" aria-label="Comparison of the three books"></div>
+      <p class="note">Rounded figures. Ask the sand for more detail on any row.</p>
     </section>
 
     <section id="sandWrap" class="sand-wrap" hidden>

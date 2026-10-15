@@ -1,0 +1,22 @@
+// Side-by-side facts for the "Compare the books" table. Figures are rounded; see the answers for detail.
+export const FACTS = [
+  { label: 'Faith', tanakh: 'Judaism', bible: 'Christianity', quran: 'Islam' },
+  { label: 'Name means', tanakh: 'Acronym of Torah (Teaching), Prophets, Writings', bible: '"The books" (Greek)', quran: '"The recitation" (Arabic)' },
+  { label: 'Written', tanakh: 'About 1000–165 BCE (tradition: Torah given to Moses over 3,000 years ago)', bible: 'Old Testament as the Tanakh; New Testament about 50–100 CE', quran: 'Revealed 610–632 CE; standard text about 650 CE' },
+  { label: 'Original language', tanakh: 'Hebrew, some Aramaic', bible: 'Hebrew and Aramaic; New Testament in Greek', quran: 'Arabic' },
+  { label: 'Where', tanakh: 'Land of Israel; some in Babylon and Persia', bible: 'Israel; New Testament across the Roman Mediterranean', quran: 'Mecca and Medina, western Arabia' },
+  { label: 'Traditional authors', tanakh: 'Moses, David, Solomon, the prophets; gathered by Ezra', bible: 'Old Testament authors, plus Matthew, Mark, Luke, John, Paul and others', quran: 'God, revealed to Muhammad through Gabriel' },
+  { label: 'Books', tanakh: '24 (39 in Christian counting)', bible: '66 Protestant · 73 Catholic', quran: '1 book of 114 surahs' },
+  { label: 'Chapters', tanakh: '929', bible: '1,189', quran: '114 surahs' },
+  { label: 'Verses', tanakh: 'About 23,000', bible: '31,102', quran: '6,236' },
+  { label: 'Sections', tanakh: 'Torah · Prophets · Writings', bible: 'Old Testament · New Testament', quran: 'Meccan and Medinan surahs · 30 juz' },
+  { label: 'Central figure', tanakh: 'Moses', bible: 'Jesus', quran: 'Muhammad (who receives it)' },
+  { label: 'View of God', tanakh: 'One God', bible: 'One God in three persons (Trinity)', quran: 'One God (tawhid)' },
+  { label: 'Other key texts', tanakh: 'Talmud and Mishnah', bible: 'Church tradition (Catholic, Orthodox)', quran: 'Hadith (sayings of Muhammad)' },
+  { label: 'Place of worship', tanakh: 'Synagogue', bible: 'Church', quran: 'Mosque' },
+  { label: 'Weekly holy day', tanakh: 'Saturday (Sabbath)', bible: 'Sunday', quran: 'Friday prayer' },
+  { label: 'Holiest city', tanakh: 'Jerusalem', bible: 'Jerusalem', quran: 'Mecca' },
+  { label: 'Followers today', tanakh: 'About 16 million', bible: 'About 2.4 billion', quran: 'About 2 billion' },
+  { label: 'Oldest copies', tanakh: 'Dead Sea Scrolls (from about 250 BCE)', bible: 'New Testament papyri (2nd century)', quran: 'Birmingham manuscript (568–645 CE)' },
+  { label: 'Cover symbol', tanakh: 'Star of David', bible: 'Cross', quran: 'Rub el Hizb (eight-pointed star)' },
+];

@@ -1,6 +1,7 @@
 import { BOOKS } from './books.js';
 import { answer, SUGGESTIONS } from './answers.js';
 import { SandWriter } from './sand.js';
+import { FACTS } from './facts.js';
 
 const $ = (id) => document.getElementById(id);
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -113,3 +114,28 @@ addEventListener('resize', () => {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => { if (lastTopic) writer.write(lastTopic.title, lastTopic.answer, { reducedMotion: true }); }, 200);
 });
+
+// ---------- Compare the books side by side ----------
+const BOOK_NAMES = { tanakh: 'Tanakh', bible: 'Bible', quran: "Qur'an" };
+
+function renderFacts() {
+  const books = [...document.querySelectorAll('.pick input:checked')].map((b) => b.value);
+  const facts = $('facts');
+  facts.style.setProperty('--cols', books.length);
+  facts.innerHTML = '<div class="corner" role="columnheader"></div>'
+    + books.map((b) => `<div class="head ${b}" role="columnheader">${BOOK_NAMES[b]}</div>`).join('')
+    + FACTS.map((row) => `<div class="row-label" role="rowheader">${escape(row.label)}</div>`
+      + books.map((b) => `<div role="cell" aria-label="${BOOK_NAMES[b]}">${escape(row[b])}</div>`).join('')).join('');
+}
+
+document.querySelector('.pick').addEventListener('change', (e) => {
+  if (document.querySelectorAll('.pick input:checked').length < 2) e.target.checked = true;   // compare at least two
+  renderFacts();
+});
+
+$('compareToggle').onclick = () => {
+  const open = $('compare').hidden;
+  $('compare').hidden = !open;
+  $('compareToggle').setAttribute('aria-expanded', String(open));
+  if (open) { renderFacts(); $('compare').scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' }); }
+};
