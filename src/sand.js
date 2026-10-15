@@ -46,12 +46,13 @@ export class SandWriter {
     // Each line becomes a job that reveals left to right.
     const jobs = [{ text: title, font: titleFont, x: pad, y: pad + size + 6 }];
     lines.forEach((text, i) => jobs.push({ text, font, x: pad, y: pad + (size + 8) * 1.6 + (i + 0.8) * lineH }));
-    const speed = 900;   // pixels per second
+    for (const job of jobs) { ctx.font = job.font; job.width = ctx.measureText(job.text).width; }
+    // 900 px per second, but faster for long answers so none takes more than about 9 seconds
+    const textWidth = jobs.reduce((sum, job) => sum + job.width, 0);
+    const speed = Math.max(900, textWidth / (9 - jobs.length * 0.06));
     const start = performance.now();
     let offset = 0;
     for (const job of jobs) {
-      ctx.font = job.font;
-      job.width = ctx.measureText(job.text).width;
       job.start = offset;
       offset += job.width / speed * 1000 + 60;
     }
