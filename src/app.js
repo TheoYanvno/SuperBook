@@ -1,5 +1,5 @@
 import { BOOKS } from './books.js';
-import { answer, SUGGESTIONS } from './answers.js';
+import { answer } from './answers.js';
 import { SandWriter } from './sand.js';
 import { DesertAmbience } from './music.js';
 import { FACTS } from './facts.js';
@@ -91,6 +91,8 @@ function ask(question) {
   const topic = answer(question);
   lastTopic = topic;
   $('spoken').textContent = `${topic.title}. ${topic.answer.join(' ')}`;   // for screen readers
+  $('sourceLink').hidden = !topic.source;            // study answers link to the passage itself
+  if (topic.source) { $('sourceLink').href = topic.source.url; $('sourceLink').textContent = `${topic.source.label} ↗`; }
   $('sandWrap').hidden = false;          // must be visible so the canvas has a width
   writer.write(topic.title, topic.answer, { reducedMotion });
   $('sandWrap').scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
@@ -100,12 +102,6 @@ $('askForm').addEventListener('submit', (e) => {
   e.preventDefault();
   const q = $('question').value.trim();
   if (q) ask(q);
-});
-$('chips').innerHTML = SUGGESTIONS.map((s) => `<button type="button" class="chip">${s}</button>`).join('');
-$('chips').addEventListener('click', (e) => {
-  if (!e.target.matches('.chip')) return;
-  $('question').value = e.target.textContent;
-  ask(e.target.textContent);
 });
 $('smooth').onclick = () => { lastTopic = null; writer.smooth(); setTimeout(() => { $('sandWrap').hidden = true; }, 450); };
 

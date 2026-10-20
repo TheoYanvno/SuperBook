@@ -3,10 +3,11 @@
 // 1. normalize()  lowercases, unifies spellings (Koran → quran, Mohammed → muhammad) and removes punctuation.
 // 2. stem()       trims common endings so "prophets", "praying" and "prayed" match "prophet" and "pray".
 // 3. findBooks()  notices which books or faiths the question names (Torah, Christians, Qur'an…).
-// 4. answer()     scores every topic by its keywords and answers for the named books only,
+// 4. answer()     checks for a named passage or chapter first (passages.js, study.js), then scores every topic by its keywords and answers for the named books only,
 //                 or for all three when none (or all) are named.
 import { TOPICS } from './topics.js';
 import { PASSAGES, CONTEXT_WORDS } from './passages.js';
+import { findChapter, questionType, studyAnswer } from './study.js';
 
 export { TOPICS };
 
@@ -139,8 +140,14 @@ export function passageAnswer(passage) {
 export function answer(question) {
   const q = normalize(question);
   if (q.trim().length < 2) return FALLBACK;
+  // A named chapter: the passage's historical context when we have it and that's what is asked,
+  // otherwise the study guide for that chapter (main idea, people, ethics, words, interpretations…)
   const passage = findPassage(question);
-  if (passage) return passageAnswer(passage);
+  const chapter = findChapter(question);
+  if (passage && (!chapter || [0, 4, 8].includes(questionType(question).type) || questionType(question).score === 0)) {
+    return passageAnswer(passage);
+  }
+  if (chapter) return studyAnswer(question, chapter);
   const named = findBooks(question);
   const books = named.length ? named : BOOKS;
   const [best] = rank(question);
@@ -161,20 +168,7 @@ const FALLBACK = {
     'Try a question about the books (how old they are, who wrote them, where, what language, how they are organized, the oldest copies), people (God, Jesus, Muhammad, Moses, Abraham, Mary, Noah, Joseph, David, Jonah), beliefs (creation, angels, Satan, miracles, the afterlife, sin, free will, the end of days) or practice (prayer, holy days, fasting, charity, pilgrimage, food, marriage, funerals, dress).',
     'Name one or two books to compare just those, for example: "How do the Bible and the Qur\'an see Jesus?"',
     'You can also ask for the historical context of a passage, such as Psalm 137, Isaiah 53, John 3:16 or Surah 96.',
+    'Or ask how to study one of 300 chapters and surahs, for example: "What ethical choices arise in Genesis 12?" or "What are the main themes of Surah Al-Mulk?"',
   ],
 };
 export { FALLBACK };
-
-export const SUGGESTIONS = [
-  'How are the books different?',
-  'How old is each book?',
-  'Who wrote them?',
-  'Where were they written?',
-  "How do the Bible and the Qur'an see Jesus?",
-  'What does Judaism teach about the afterlife?',
-  'What do they have in common?',
-  'How do they pray?',
-  "How do the Bible and Qur'an stories differ?",
-  'Were any books removed from the Bible?',
-  'What is the historical context of Psalm 137?',
-];

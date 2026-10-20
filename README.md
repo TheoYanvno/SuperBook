@@ -17,12 +17,13 @@ A web app for exploring the scriptures of the three Abrahamic faiths. Three book
   - Holy Bible in the Eastern Orthodox canon and order: the Old Testament following the Septuagint, with Tobit, Judith, Wisdom of Solomon, Sirach, Baruch, 1–4 Maccabees, 1 Esdras, the Prayer of Manasseh, Susanna and Bel and the Dragon (books like 1 Samuel show their Orthodox names, "1 Kingdoms"), then the 27 books of the New Testament
   - Qur'an, all 114 surahs, in English with the Arabic original
 - **Covers** use each faith's widely recognized symbol: the Star of David, the cross, and the eight-pointed star (Rub el Hizb) that marks sections of the Qur'an
-- **Ask the sand**: type a question (or tap a suggestion) and the answer is carved into the sand letter by letter. A gust of wind smooths it away. The sand covers 76 topics, each answered separately for the Tanakh, the Bible and the Qur'an:
+- **Ask the sand**: type a question and the answer is carved into the sand letter by letter. A gust of wind smooths it away. The sand covers 76 topics, each answered separately for the Tanakh, the Bible and the Qur'an:
   - **The books:** how they differ, how old they are, who wrote them, where, original languages and translations, how they're organized, the longest and shortest chapters, first and last words, famous passages, the oldest manuscripts, which books are included, the Gospels, other sacred writings (Talmud, Hadith) and interpretation
   - **People:** God and the names of God, the Holy Spirit, Jesus, Muhammad, the prophets, Abraham, Moses, Noah, Joseph, David and Solomon, Jonah, John the Baptist, Mary, Paul and women in the scriptures
   - **Beliefs:** creation, Satan, angels and jinn, miracles, the Messiah, the end of days, the afterlife, sin and salvation, repentance, free will, suffering, covenant, ethics, peace and war, and how the faiths see each other
   - **Practice:** law, the Ten Commandments, prayer, places of worship and leaders, holy days, the Sabbath, fasting, charity, pilgrimage, holy places, food, money, marriage, funerals, circumcision and baptism, conversion, dress, art, calendars, greetings and followers today
 - **Harder questions**: which books are in one scripture but not another (and why the Tanakh counts 24 books where Protestant Bibles count 39), how the stories the Bible and the Qur'an share are told differently, and the historical context behind a passage ("What is the historical context of Psalm 137?", "Why was Surah 96 revealed?").
+- **Study questions for 300 chapters and surahs**: ask about one of the 100 Bible chapters, 100 Torah chapters or 100 surahs in the *3,000 Scripture Study Questions* workbook ("What ethical choices arise in Genesis 12?", "Who are the key people in Exodus 3 in the Torah?", "What are the main themes of Surah Al-Mulk?"). The sand explains how to approach that kind of question (main idea, people, God and humanity, ethics, setting, key words, conflict, connections, interpretations or a hard question), suggests more questions to explore, and links to the passage on Bible Gateway, Sefaria or Quran.com. The workbook's suggested answers are study methods rather than summaries, so the sand doesn't claim to say what each chapter contains.
 - **Compare any two or all three**: name books or faiths in a question ("How do the Bible and the Qur'an see Jesus?", "What does Judaism teach about the afterlife?") and the answer covers only those. Ask about a book with no topic ("Tell me about the Torah") and the sand describes it.
 - **Side-by-side table**: compare the books on 19 facts, including age, language, size, authors, region, central figure, holy day and followers
 - Works on phones, supports reduced-motion settings, and screen readers get the answer as text
@@ -46,6 +47,8 @@ The free Bible source doesn't have the Letter of Jeremiah, Psalm 151 or the Gree
 | [`src/books.js`](src/books.js) | Table of contents for each book and the API calls that load a chapter |
 | [`src/topics.js`](src/topics.js) | 76 topics, each with a short answer per book and the keywords that point to it |
 | [`src/passages.js`](src/passages.js) | Historical context for 20 well-known passages, from Genesis 1 and Psalm 137 to John 3:16 and Surah 96 |
+| [`src/studydata.js`](src/studydata.js) | The workbook's chapters, study questions and suggested answers. The workbook reuses the same ten answers in the same order for all three scriptures; they fit the Bible questions, and `FIT` pairs each Torah and Qur'an question with the answer that matches it |
+| [`src/study.js`](src/study.js) | Finds a chapter or surah in a question ("Genesis 12", "chapter 12 of Genesis", "Surah Baqarah", "Al-Mulk"), decides which scripture it means, works out the kind of question and builds the answer |
 | [`src/answers.js`](src/answers.js) | Question matcher: normalizes spellings (Koran → Qur'an), stems words (prophets → prophet), detects which books a question names, scores topics (specific keywords outweigh general ones) and builds the answer |
 | [`src/facts.js`](src/facts.js) | The facts in the side-by-side comparison table |
 | [`src/sand.js`](src/sand.js) | Canvas animation that writes text as grooves in the sand, with flying grains and a wind-sweep effect |
@@ -55,7 +58,7 @@ The free Bible source doesn't have the Letter of Jeremiah, Psalm 151 or the Gree
 
 ```bash
 python3 -m http.server 8000      # then open http://localhost:8000 (needs internet to load the texts)
-npm test                         # 12 tests, including 131 sample questions routed to the right topic and books
+npm test                         # 15 tests, including 131 sample questions routed to the right topic and books
 ```
 
 It can also be published for free with GitHub Pages (Settings → Pages → deploy from the `main` branch).

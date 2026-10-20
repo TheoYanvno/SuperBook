@@ -36,7 +36,9 @@ export class SandWriter {
     const titleFont = `bold ${size + 8}px "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive`;
     const pad = 24, lineH = size * 1.55;
     const lines = this.wrap(paragraphs, font, width - pad * 2);
-    const height = pad * 2 + (size + 8) * 1.6 + lines.length * lineH;
+    const titleLines = this.wrap([title], titleFont, width - pad * 2);       // long titles wrap on phones
+    const titleH = (size + 8) * 1.6 + (titleLines.length - 1) * (size + 8) * 1.3;
+    const height = pad * 2 + titleH + lines.length * lineH;
     this.canvas.style.height = `${height}px`;
     this.canvas.width = width * dpr;
     this.canvas.height = height * dpr;
@@ -44,8 +46,8 @@ export class SandWriter {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     // Each line becomes a job that reveals left to right.
-    const jobs = [{ text: title, font: titleFont, x: pad, y: pad + size + 6 }];
-    lines.forEach((text, i) => jobs.push({ text, font, x: pad, y: pad + (size + 8) * 1.6 + (i + 0.8) * lineH }));
+    const jobs = titleLines.map((text, i) => ({ text, font: titleFont, x: pad, y: pad + size + 6 + i * (size + 8) * 1.3 }));
+    lines.forEach((text, i) => jobs.push({ text, font, x: pad, y: pad + titleH + (i + 0.8) * lineH }));
     for (const job of jobs) { ctx.font = job.font; job.width = ctx.measureText(job.text).width; }
     // 900 px per second, but faster for long answers so none takes more than about 9 seconds
     const textWidth = jobs.reduce((sum, job) => sum + job.width, 0);

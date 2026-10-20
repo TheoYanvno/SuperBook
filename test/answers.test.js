@@ -4,6 +4,8 @@ import { answer, findBooks, findPassage, stem, normalize, TOPICS, BOOKS } from '
 import { PASSAGES } from '../src/passages.js';
 import { FACTS } from '../src/facts.js';
 import { BIBLE, TANAKH, ORTHODOX_EXTRA, BOOKS as LIBRARY } from '../src/books.js';
+import { findChapter, questionType } from '../src/study.js';
+import { CHAPTERS, QUESTIONS, FIT, GUIDANCE } from '../src/studydata.js';
 
 // [question, expected topic, expected books (default: all three)]
 const CASES = [
@@ -153,4 +155,52 @@ test('every passage is complete', () => {
   for (const p of PASSAGES) {
     assert.ok(p.ref && BOOKS.includes(p.book) && p.match.length && p.context.length >= 3, p.ref);
   }
+});
+
+test('study guide covers 100 chapters from each scripture, with a fitting answer for every question', () => {
+  assert.deepStrictEqual([CHAPTERS.bible.length, CHAPTERS.tanakh.length, CHAPTERS.quran.length], [100, 100, 100]);
+  assert.deepStrictEqual(CHAPTERS.quran.map(([n]) => n), Array.from({ length: 100 }, (_, i) => i + 1));
+  for (const book of ['bible', 'tanakh', 'quran']) {
+    assert.strictEqual(QUESTIONS[book].length, 10);
+    assert.ok(FIT[book].every((g) => g.length && g.every((i) => GUIDANCE[i])), book);
+  }
+  // Questions are routed to the guidance that answers them, not just the one in the same position
+  assert.deepStrictEqual(FIT.quran[1], [2]);      // God's attributes → how the passage portrays divine action
+  assert.deepStrictEqual(FIT.tanakh[4], [1]);     // family, leadership, community → the people in the passage
+});
+
+test('answers study questions about a named chapter or surah', () => {
+  const cases = [
+    // [question, title, first words of the answer, link]
+    ['What ethical choices arise in Genesis 12?', 'Genesis 12 · how to study it', 'Identify a concrete choice', 'biblegateway.com/passage/?search=Genesis%2012&version=WEB'],
+    ['Who are the key people in Exodus 3 in the Torah?', 'Exodus 3 (Torah) · how to study it', 'Name the people', 'sefaria.org/Exodus.3'],
+    ['What are the main themes of Surah Al-Mulk?', 'Surah 67 (Al-Mulk) · how to study it', 'Identify the main', 'quran.com/67'],
+    ['How does surah baqarah describe God?', 'Surah 2 (Al-Baqarah) · how to study it', 'Examine how Surah 2', 'quran.com/2'],
+    ['What Hebrew words stand out in Leviticus 19?', 'Leviticus 19 (Torah) · how to study it', 'Look for repeated terms', 'sefaria.org/Leviticus.19'],
+    ['How does 1 Corinthians 13 connect with other passages?', '1 Corinthians 13 · how to study it', 'Compare the major themes', '1%20Corinthians%2013'],
+    ['chapter 12 of genesis', 'Genesis 12 · how to study it', 'Identify the main', 'Genesis%2012'],
+    ['What tafsir helps with surah 18?', 'Surah 18 (Al-Kahf) · how to study it', 'Read Surah 18', 'quran.com/18'],
+  ];
+  for (const [question, title, start, link] of cases) {
+    const a = answer(question);
+    assert.strictEqual(a.id, 'study', question);
+    assert.strictEqual(a.title, title, question);
+    assert.ok(a.answer[0].startsWith(start), `${question}: ${a.answer[0]}`);
+    assert.ok(a.source.url.includes(link), a.source.url);
+    assert.ok(a.answer.some((p) => p.startsWith('More questions to explore:')));
+  }
+});
+
+test('study guide stays out of the way of other answers', () => {
+  assert.strictEqual(findChapter('What is in 1 John 1?'), null);         // not read as John 1
+  assert.strictEqual(findChapter('How old is the Bible?'), null);
+  assert.strictEqual(findChapter('Genesis 2'), null);                    // not one of the workbook's chapters
+  assert.strictEqual(findChapter('Genesis 6').book, 'tanakh');           // only in the Torah part
+  assert.strictEqual(findChapter('Genesis 1').book, 'bible');            // in both: Bible unless the question is Jewish
+  assert.strictEqual(findChapter('Genesis 1 in Jewish tradition').book, 'tanakh');
+  assert.strictEqual(answer('What does 1 Corinthians 13 mean?').id, 'passage');      // curated historical context wins
+  assert.strictEqual(answer('What is the historical context of Psalm 137?').id, 'passage');
+  assert.strictEqual(questionType('Who are the people in it?').type, 1);
+  assert.strictEqual(findChapter('Who was Muhammad?'), null);              // a person, not Surah 47
+  assert.strictEqual(findChapter('What are the themes of Surah Yusuf?').ref, 'Surah 12 (Yusuf)');
 });

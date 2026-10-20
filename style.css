@@ -52,8 +52,6 @@ main { max-width: 1000px; margin: 0 auto; padding: 0 16px 60px; }
 #askForm { display: flex; gap: 8px; max-width: 620px; margin: 0 auto; }
 #askForm input { flex: 1; min-width: 0; padding: 12px 14px; border-radius: 999px; border: 2px solid #b98a4c; background: #fbecd0; font: inherit; color: var(--ink); }
 #askForm button, .smooth, .reader button { font: inherit; padding: 10px 18px; border-radius: 999px; border: 0; background: #8a5a24; color: #fff8e6; cursor: pointer; }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 14px auto 0; max-width: 760px; }
-.chip { font: inherit; font-size: .9rem; padding: 6px 12px; border-radius: 999px; border: 1px solid #b98a4c; background: rgba(251, 236, 208, .7); color: var(--ink); cursor: pointer; }
 
 .sand-wrap { margin-top: 28px; padding: 10px; border-radius: 20px; background:
   radial-gradient(ellipse at 30% 20%, rgba(255, 240, 205, .5), transparent 60%),
@@ -62,6 +60,8 @@ main { max-width: 1000px; margin: 0 auto; padding: 0 16px 60px; }
 #sand { width: 100%; height: 0; display: block; }
 .note { font-size: .85rem; color: #6b4a22; margin: 6px 0 4px; }
 .smooth { margin-top: 6px; background: #a8732f; }
+.source-link { display: block; margin: 8px auto 4px; width: fit-content; color: #6b4316; font-weight: 600; }
+.source-link[hidden] { display: none; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
 .reader { width: min(820px, 94vw); max-height: 90vh; padding: 0; border: 0; border-radius: 6px 14px 14px 6px; background: #fbf3e2;
