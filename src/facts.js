@@ -6,7 +6,7 @@ export const FACTS = [
   { label: 'Original language', tanakh: 'Hebrew, some Aramaic', bible: 'Hebrew and Aramaic; New Testament in Greek', quran: 'Arabic' },
   { label: 'Where', tanakh: 'Land of Israel; some in Babylon and Persia', bible: 'Israel; New Testament across the Roman Mediterranean', quran: 'Mecca and Medina, western Arabia' },
   { label: 'Traditional authors', tanakh: 'Moses, David, Solomon, the prophets; gathered by Ezra', bible: 'Old Testament authors, plus Matthew, Mark, Luke, John, Paul and others', quran: 'God, revealed to Muhammad through Gabriel' },
-  { label: 'Books', tanakh: '24 (39 in Christian counting)', bible: '66 Protestant · 73 Catholic', quran: '1 book of 114 surahs' },
+  { label: 'Books', tanakh: '24 (39 in Christian counting)', bible: '76 Eastern Orthodox (49 + 27) · 73 Catholic · 66 Protestant', quran: '1 book of 114 surahs' },
   { label: 'Chapters', tanakh: '929', bible: '1,189', quran: '114 surahs' },
   { label: 'Verses', tanakh: 'About 23,000', bible: '31,102', quran: '6,236' },
   { label: 'Sections', tanakh: 'Torah · Prophets · Writings', bible: 'Old Testament · New Testament', quran: 'Meccan and Medinan surahs · 30 juz' },

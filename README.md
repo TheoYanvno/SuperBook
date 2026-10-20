@@ -14,7 +14,7 @@ A web app for exploring the scriptures of the three Abrahamic faiths. Three book
 
 - **Read all three books in full**, with book/surah and chapter pickers and next/previous buttons
   - Tanakh in the Jewish order (Torah, Prophets, Writings), in English with the Hebrew original
-  - Holy Bible, all 66 books of the Old and New Testaments
+  - Holy Bible in the Eastern Orthodox canon and order: the Old Testament following the Septuagint, with Tobit, Judith, Wisdom of Solomon, Sirach, Baruch, 1–4 Maccabees, 1 Esdras, the Prayer of Manasseh, Susanna and Bel and the Dragon (books like 1 Samuel show their Orthodox names, "1 Kingdoms"), then the 27 books of the New Testament
   - Qur'an, all 114 surahs, in English with the Arabic original
 - **Covers** use each faith's widely recognized symbol: the Star of David, the cross, and the eight-pointed star (Rub el Hizb) that marks sections of the Qur'an
 - **Ask the sand**: type a question (or tap a suggestion) and the answer is carved into the sand letter by letter. A gust of wind smooths it away. The sand covers 76 topics, each answered separately for the Tanakh, the Bible and the Qur'an:
@@ -34,8 +34,10 @@ The app doesn't store any scripture. Each chapter is loaded when you open it, fr
 | Book | Translation | Source |
 |---|---|---|
 | Tanakh | *The Holy Scriptures* (JPS 1917), with Hebrew from *Miqra according to the Masorah* (CC BY-SA) | [Sefaria](https://www.sefaria.org) |
-| Holy Bible | King James Version (1611) | [bible-api.com](https://bible-api.com) |
+| Holy Bible | World English Bible (public domain), which includes the books Protestant Bibles leave out | [bible-api.com](https://bible-api.com) |
 | Qur'an | Marmaduke Pickthall (1930), with the Arabic Uthmani text | [alquran.cloud](https://alquran.cloud) |
+
+The free Bible source doesn't have the Letter of Jeremiah, Psalm 151 or the Greek additions to Esther and Daniel (except Susanna and Bel), so those are the only parts of the Orthodox Bible missing from the reader.
 
 ## How it's built
 

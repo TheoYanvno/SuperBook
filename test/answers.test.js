@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import { answer, findBooks, findPassage, stem, normalize, TOPICS, BOOKS } from '../src/answers.js';
 import { PASSAGES } from '../src/passages.js';
 import { FACTS } from '../src/facts.js';
-import { BIBLE, TANAKH } from '../src/books.js';
+import { BIBLE, TANAKH, ORTHODOX_EXTRA, BOOKS as LIBRARY } from '../src/books.js';
 
 // [question, expected topic, expected books (default: all three)]
 const CASES = [
@@ -103,8 +103,16 @@ test('comparison table has a value for every book', () => {
 });
 
 test('book tables have the expected size', () => {
-  assert.strictEqual(BIBLE.length, 66);
-  assert.strictEqual(BIBLE.reduce((n, [, c]) => n + c, 0), 1189);
+  // Eastern Orthodox Bible: 48 of its 49 Old Testament books (no Letter of Jeremiah on bible-api.com),
+  // plus the Prayer of Manasseh, Susanna, Bel and the Dragon and 4 Maccabees as their own entries, and 27 NT books
+  assert.strictEqual(BIBLE.length, 79);
+  assert.strictEqual(BIBLE.slice(-27)[0][0], 'Matthew');
+  for (const id of ORTHODOX_EXTRA) assert.ok(BIBLE.some(([b]) => b === id), id);
+  const ids = BIBLE.map(([id]) => id);
+  assert.strictEqual(new Set(ids).size, ids.length);
+  assert.deepStrictEqual(LIBRARY.bible.sections.find((s) => s.id === '1 Kings'), { id: '1 Kings', label: '3 Kingdoms (1 Kings)', chapters: 22 });
+  assert.deepStrictEqual(LIBRARY.bible.sections.find((s) => s.id === 'sus'), { id: 'sus', label: 'Susanna', chapters: 1 });
+  assert.ok(ids.indexOf('Tobit') < ids.indexOf('Psalms') && ids.indexOf('Malachi') < ids.indexOf('Isaiah'));   // Orthodox order
   assert.strictEqual(TANAKH.length, 39);   // 39 books as Sefaria lists them = the traditional 24
 });
 
