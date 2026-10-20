@@ -139,4 +139,6 @@ export const SUGGESTIONS = [
   'What does Judaism teach about the afterlife?',
   'What do they have in common?',
   'How do they pray?',
+  "How do the Bible and Qur'an stories differ?",
+  'Were any books removed from the Bible?',
 ];

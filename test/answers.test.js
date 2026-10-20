@@ -42,6 +42,10 @@ const CASES = [
 ['Why does the Catholic Bible have more books?','canon','bible'],['How many chapters does each have?','structure'],['What is the Old Testament?','profile','bible'],['How many verses are in the Quran?','structure','quran'],
 ['Tell me about the Torah','profile','tanakh'],['What is Islam?','profile','quran'],['Tell me about Judaism and Christianity','differences','tanakh,bible'],['Tell me about the three books','overview'],
 ['Is the Bible the word of God?','revelation','bible'],['How was the Quran revealed?','revelation','quran'],
+['What books were removed from the Bible that are in the Torah?','canondiff','tanakh,bible'],['Why does the Tanakh have 24 books and the Old Testament 39?','canondiff','tanakh,bible'],
+['Are the five books of Moses in the Bible?','canondiff','bible'],['What is the Injil?','canondiff'],
+['What are the changes from the Bible and Quran stories?','storydiff','bible,quran'],['How do the stories differ between the books?','storydiff'],['Does the Quran retell Bible stories?','storydiff','bible,quran'],
+['What is the historical context of the passages?','context'],['What was the historical background of the Quran?','context','quran'],
 ['what is the capital of France','unknown'],['',"unknown"],
 ]
 
@@ -111,3 +115,4 @@ test('ambience uses the D Hijaz scale and correct pitches', async () => {
   assert.strictEqual(HIJAZ.length, 7);
   for (const chord of PROGRESSION) assert.ok(chord.every((d) => Number.isInteger(d)));
 });
+
