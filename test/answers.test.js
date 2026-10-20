@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import { answer, findBooks, stem, normalize, TOPICS, BOOKS } from '../src/answers.js';
+import { answer, findBooks, findPassage, stem, normalize, TOPICS, BOOKS } from '../src/answers.js';
+import { PASSAGES } from '../src/passages.js';
 import { FACTS } from '../src/facts.js';
 import { BIBLE, TANAKH } from '../src/books.js';
 
@@ -116,3 +117,32 @@ test('ambience uses the D Hijaz scale and correct pitches', async () => {
   for (const chord of PROGRESSION) assert.ok(chord.every((d) => Number.isInteger(d)));
 });
 
+test('gives the historical context of a named passage', () => {
+  const cases = [
+    ['What is the historical context of Psalm 137?', 'Psalm 137'],
+    ['What was happening when John 3:16 was written?', 'John 3:16'],
+    ['Explain the context of Quran 9:5', 'Surah 9 (At-Tawbah), including 9:5'],
+    ['Why was Surah 96 revealed?', 'Surah 96 (Al-Alaq), verses 1–5'],
+    ['What does 1 Corinthians 13 mean?', '1 Corinthians 13'],
+    ['What is the background of the rivers of Babylon?', 'Psalm 137'],
+    ['Who is the suffering servant in Isaiah 53?', 'Isaiah 53'],
+  ];
+  for (const [question, ref] of cases) {
+    const a = answer(question);
+    assert.strictEqual(a.id, 'passage', question);
+    assert.ok(a.title.endsWith(ref), `${question} → ${a.title}`);
+    assert.ok(a.answer.length >= 3);
+  }
+});
+
+test('named passages without a reference number only count when the question asks about them', () => {
+  assert.strictEqual(findPassage('What is the context of the suffering servant?').ref, 'Isaiah 53');
+  assert.strictEqual(findPassage('suffering servant'), null);
+  assert.strictEqual(answer('What does the Quran say about Mary?').id, 'mary');
+});
+
+test('every passage is complete', () => {
+  for (const p of PASSAGES) {
+    assert.ok(p.ref && BOOKS.includes(p.book) && p.match.length && p.context.length >= 3, p.ref);
+  }
+});

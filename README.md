@@ -22,7 +22,7 @@ A web app for exploring the scriptures of the three Abrahamic faiths. Three book
   - **People:** God and the names of God, the Holy Spirit, Jesus, Muhammad, the prophets, Abraham, Moses, Noah, Joseph, David and Solomon, Jonah, John the Baptist, Mary, Paul and women in the scriptures
   - **Beliefs:** creation, Satan, angels and jinn, miracles, the Messiah, the end of days, the afterlife, sin and salvation, repentance, free will, suffering, covenant, ethics, peace and war, and how the faiths see each other
   - **Practice:** law, the Ten Commandments, prayer, places of worship and leaders, holy days, the Sabbath, fasting, charity, pilgrimage, holy places, food, money, marriage, funerals, circumcision and baptism, conversion, dress, art, calendars, greetings and followers today
-- **Harder questions**: which books are in one scripture but not another (and why the Tanakh counts 24 books where Protestant Bibles count 39), and how the stories the Bible and the Qur'an share are told differently.
+- **Harder questions**: which books are in one scripture but not another (and why the Tanakh counts 24 books where Protestant Bibles count 39), how the stories the Bible and the Qur'an share are told differently, and the historical context behind a passage ("What is the historical context of Psalm 137?", "Why was Surah 96 revealed?").
 - **Compare any two or all three**: name books or faiths in a question ("How do the Bible and the Qur'an see Jesus?", "What does Judaism teach about the afterlife?") and the answer covers only those. Ask about a book with no topic ("Tell me about the Torah") and the sand describes it.
 - **Side-by-side table**: compare the books on 19 facts, including age, language, size, authors, region, central figure, holy day and followers
 - Works on phones, supports reduced-motion settings, and screen readers get the answer as text
@@ -43,6 +43,7 @@ The app doesn't store any scripture. Each chapter is loaded when you open it, fr
 |---|---|
 | [`src/books.js`](src/books.js) | Table of contents for each book and the API calls that load a chapter |
 | [`src/topics.js`](src/topics.js) | 76 topics, each with a short answer per book and the keywords that point to it |
+| [`src/passages.js`](src/passages.js) | Historical context for 20 well-known passages, from Genesis 1 and Psalm 137 to John 3:16 and Surah 96 |
 | [`src/answers.js`](src/answers.js) | Question matcher: normalizes spellings (Koran → Qur'an), stems words (prophets → prophet), detects which books a question names, scores topics (specific keywords outweigh general ones) and builds the answer |
 | [`src/facts.js`](src/facts.js) | The facts in the side-by-side comparison table |
 | [`src/sand.js`](src/sand.js) | Canvas animation that writes text as grooves in the sand, with flying grains and a wind-sweep effect |
@@ -52,7 +53,7 @@ The app doesn't store any scripture. Each chapter is loaded when you open it, fr
 
 ```bash
 python3 -m http.server 8000      # then open http://localhost:8000 (needs internet to load the texts)
-npm test                         # 9 tests, including 131 sample questions routed to the right topic and books
+npm test                         # 12 tests, including 131 sample questions routed to the right topic and books
 ```
 
 It can also be published for free with GitHub Pages (Settings → Pages → deploy from the `main` branch).

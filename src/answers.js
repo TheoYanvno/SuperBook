@@ -6,6 +6,7 @@
 // 4. answer()     scores every topic by its keywords and answers for the named books only,
 //                 or for all three when none (or all) are named.
 import { TOPICS } from './topics.js';
+import { PASSAGES, CONTEXT_WORDS } from './passages.js';
 
 export { TOPICS };
 
@@ -104,9 +105,42 @@ export function compose(topic, books = BOOKS) {
 const PROFILE = TOPICS.find((t) => t.id === 'profile');
 const DIFFERENCES = TOPICS.find((t) => t.id === 'differences');
 
+/**
+ * A known passage named in the question ("Psalm 137", "Surah 96", "John 3:16").
+ * Numbered references always count; named ones ("rivers of Babylon") count when the question asks about context or meaning.
+ * The longest matching pattern wins, so "1 Corinthians 13" beats "Corinthians 13".
+ */
+export function findPassage(question) {
+  const q = normalize(question);
+  const asksContext = CONTEXT_WORDS.some((w) => q.includes(w));
+  let best = null;
+  for (const passage of PASSAGES) {
+    for (const pattern of passage.match) {
+      const p = ` ${normalize(pattern).trim()} `;
+      if (!q.includes(p)) continue;
+      if (!/[0-9]/.test(pattern) && !asksContext) continue;
+      if (!best || p.length > best.length) best = { passage, length: p.length };
+    }
+  }
+  return best?.passage ?? null;
+}
+
+const BOOK_LABEL = { tanakh: 'Tanakh', bible: 'Bible', quran: "Qur'an" };
+
+export function passageAnswer(passage) {
+  return {
+    id: 'passage',
+    title: `Historical context · ${passage.ref}`,
+    answer: [...passage.context, `${BOOK_LABEL[passage.book]} passage. Dates are common scholarly estimates; religious traditions may date it differently.`],
+    books: [passage.book],
+  };
+}
+
 export function answer(question) {
   const q = normalize(question);
   if (q.trim().length < 2) return FALLBACK;
+  const passage = findPassage(question);
+  if (passage) return passageAnswer(passage);
   const named = findBooks(question);
   const books = named.length ? named : BOOKS;
   const [best] = rank(question);
@@ -126,6 +160,7 @@ const FALLBACK = {
     "The sand doesn't know that one yet.",
     'Try a question about the books (how old they are, who wrote them, where, what language, how they are organized, the oldest copies), people (God, Jesus, Muhammad, Moses, Abraham, Mary, Noah, Joseph, David, Jonah), beliefs (creation, angels, Satan, miracles, the afterlife, sin, free will, the end of days) or practice (prayer, holy days, fasting, charity, pilgrimage, food, marriage, funerals, dress).',
     'Name one or two books to compare just those, for example: "How do the Bible and the Qur\'an see Jesus?"',
+    'You can also ask for the historical context of a passage, such as Psalm 137, Isaiah 53, John 3:16 or Surah 96.',
   ],
 };
 export { FALLBACK };
@@ -141,4 +176,5 @@ export const SUGGESTIONS = [
   'How do they pray?',
   "How do the Bible and Qur'an stories differ?",
   'Were any books removed from the Bible?',
+  'What is the historical context of Psalm 137?',
 ];
