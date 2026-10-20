@@ -1,39 +1,31 @@
 // "Ask the sand": matches a question to a topic and builds an answer for the books it asks about.
 //
-// 1. normalize()  lowercases, unifies spellings (Koran → quran, Mohammed → muhammad) and removes punctuation.
-// 2. stem()       trims common endings so "prophets", "praying" and "prayed" match "prophet" and "pray".
-// 3. findBooks()  notices which books or faiths the question names (Torah, Christians, Qur'an…).
-// 4. answer()     checks for a named passage or chapter first (passages.js, study.js), then scores every topic by its keywords and answers for the named books only,
-//                 or for all three when none (or all) are named.
+// 1. normalize()  lowercases, removes accents and vowel marks, unifies spellings (Koran → quran,
+//                 Mohammed → muhammad) and keeps only letters and digits, in any of the app's languages.
+// 2. localize()   turns book names in the current language into English ones ("Génesis 12" → "genesis 12"),
+//                 so passages and chapters are recognized whatever language the question is in.
+// 3. stem()       trims common English endings so "prophets", "praying" and "prayed" match "prophet" and "pray".
+// 4. findBooks()  notices which books or faiths the question names (Torah, Christians, Qur'an…).
+// 5. answer()     checks for a named passage or chapter first (passages.js, study.js), then scores every topic
+//                 by its English keywords and the current language's keywords, and answers for the named
+//                 books only, or for all three when none (or all) are named. Answers are in the current language.
 import { TOPICS } from './topics.js';
 import { PASSAGES, CONTEXT_WORDS } from './passages.js';
 import { findChapter, questionType, studyAnswer } from './study.js';
+import { t, tr, languagePack } from './i18n.js';
+import { normalize, localize, startsWords } from './text.js';
+
+export { normalize, localize };
 
 export { TOPICS };
 
 export const BOOKS = ['tanakh', 'bible', 'quran'];
-const LABELS = {
-  book: { tanakh: 'Tanakh', bible: 'Bible', quran: "Qur'an" },
-  faith: { tanakh: 'Judaism', bible: 'Christianity', quran: 'Islam' },
-};
 
-const SPELLINGS = [
-  [/qur['’]?an|koran|coran/g, 'quran'],
-  [/mohammed|mohammad|muhammed|mohamed/g, 'muhammad'],
-  [/judgement/g, 'judgment'],
-  [/neighbour/g, 'neighbor'],
-  [/['’]/g, ''],                      // what's → whats
-];
-
-export function normalize(text) {
-  let t = String(text).toLowerCase();
-  for (const [pattern, replacement] of SPELLINGS) t = t.replace(pattern, replacement);
-  return ` ${t.replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim()} `;
-}
+// ---------- English stemming ----------
 
 // Light stemming: enough to match plurals and verb forms, applied the same way to questions and keywords.
 function stemOnce(word) {
-  if (word.length <= 4) return word;
+  if (word.length <= 4 || !/^[a-z0-9]+$/.test(word)) return word;
   if (word.endsWith('ies')) return word.slice(0, -3) + 'y';
   if (word.endsWith('ing') && word.length > 5) return word.slice(0, -3);
   if (word.endsWith('ed') && word.length > 5) return word.slice(0, -2);
@@ -48,6 +40,8 @@ export function stem(word) {
 }
 const stemText = (normalized) => ` ${normalized.trim().split(' ').map(stem).join(' ')} `;
 
+// ---------- Which books a question names ----------
+
 // Words that name a book or its faith. "hebrew bible" is removed before looking for "bible".
 const BOOK_WORDS = {
   tanakh: ['tanakh', 'tanach', 'torah', 'hebrew bible', 'hebrew scriptures', 'jewish', 'jews', 'jew', 'judaism', 'talmud'],
@@ -57,13 +51,19 @@ const BOOK_WORDS = {
 
 export function findBooks(question) {
   let q = normalize(question);
+  const local = languagePack()?.bookWords ?? {};
   const found = [];
   for (const book of BOOKS) {
-    if (BOOK_WORDS[book].some((w) => q.includes(` ${w} `))) found.push(book);
-    if (book === 'tanakh') q = q.replace(/ hebrew (bible|scriptures) /g, ' ');
+    if (BOOK_WORDS[book].some((w) => q.includes(` ${w} `)) || (local[book] ?? []).some((w) => startsWords(q, w))) found.push(book);
+    if (book === 'tanakh') {
+      q = q.replace(/ hebrew (bible|scriptures) /g, ' ');
+      for (const w of local.hebrewBible ?? []) q = q.split(` ${normalize(w).trim()} `).join(' ');
+    }
   }
   return found;
 }
+
+// ---------- Topics ----------
 
 // Keywords are prepared once: normalized, stemmed, and flagged weak ("~").
 const PREPARED = TOPICS.map((topic) => ({
@@ -78,6 +78,8 @@ const PREPARED = TOPICS.map((topic) => ({
 /** Scores every topic; longer phrases count more, and all weak words together count 1 point. */
 export function rank(question) {
   const q = stemText(normalize(question));
+  const plain = normalize(question);
+  const pack = languagePack();
   return PREPARED.map(({ topic, keywords }) => {
     let score = 0, weakHit = 0;
     for (const k of keywords) {
@@ -85,38 +87,54 @@ export function rank(question) {
       if (k.weak) weakHit = 1;
       else score += k.points;
     }
+    // Keywords in the current language (written as word beginnings, e.g. "profet" for profeta/profetas)
+    for (const k of pack?.topics?.[topic.id]?.keywords ?? []) {
+      const weak = k.startsWith('~');
+      const phrase = weak ? k.slice(1) : k;
+      if (!startsWords(plain, phrase)) continue;
+      if (weak) weakHit = 1;
+      else score += normalize(phrase.replace(/^=/, '')).trim().split(' ').length + 1;
+    }
     return { topic, score: score + weakHit };
   }).filter((r) => r.score > 0).sort((a, b) => b.score - a.score);   // stable: earlier topics win ties
 }
 
-/** Builds the paragraphs for a topic, for some or all of the books. */
+const label = (kind, book) => t(`${kind === 'book' ? 'short' : 'faith'}.${book}`);
+
+/** Builds the paragraphs for a topic, for some or all of the books, in the current language. */
 export function compose(topic, books = BOOKS) {
-  const labels = LABELS[topic.kind ?? 'faith'];
+  const kind = topic.kind ?? 'faith';
+  const text = (field) => tr('topics', topic.id, field, topic[field]);
   const answer = [];
-  if (topic.shared && books.length > 1) answer.push(topic.shared);
-  for (const book of books) answer.push(`${labels[book]}: ${topic[book]}`);
-  if (topic.note) answer.push(topic.note);
-  const names = books.map((b) => labels[b]);
-  const title = books.length === BOOKS.length ? topic.title
-    : books.length === 1 ? `${topic.title} · ${names[0]}`
-    : `${topic.title} · ${names.join(' vs ')}`;
-  return { id: topic.id, title, answer, books };
+  if (topic.shared && books.length > 1) answer.push(text('shared'));
+  for (const book of books) answer.push(`${label(kind, book)}: ${text(book)}`);
+  if (topic.note) answer.push(text('note'));
+  const names = books.map((b) => label(kind, b));
+  const title = text('title');
+  const fullTitle = books.length === BOOKS.length ? title
+    : books.length === 1 ? `${title} · ${names[0]}`
+    : `${title} · ${names.join(` ${t('vs')} `)}`;
+  return { id: topic.id, title: fullTitle, answer, books };
 }
 
-const PROFILE = TOPICS.find((t) => t.id === 'profile');
-const DIFFERENCES = TOPICS.find((t) => t.id === 'differences');
+const PROFILE = TOPICS.find((x) => x.id === 'profile');
+const DIFFERENCES = TOPICS.find((x) => x.id === 'differences');
+
+// ---------- Passages ----------
 
 /**
- * A known passage named in the question ("Psalm 137", "Surah 96", "John 3:16").
+ * A known passage named in the question ("Psalm 137", "Surah 96", "John 3:16"; also "Salmo 137" in Spanish).
  * Numbered references always count; named ones ("rivers of Babylon") count when the question asks about context or meaning.
  * The longest matching pattern wins, so "1 Corinthians 13" beats "Corinthians 13".
  */
 export function findPassage(question) {
-  const q = normalize(question);
-  const asksContext = CONTEXT_WORDS.some((w) => q.includes(w));
+  const q = localize(question);
+  const localContext = languagePack()?.contextWords ?? [];
+  const asksContext = CONTEXT_WORDS.some((w) => q.includes(w)) || localContext.some((w) => startsWords(q, w));
   let best = null;
   for (const passage of PASSAGES) {
-    for (const pattern of passage.match) {
+    const local = languagePack()?.passages?.[passage.ref]?.match ?? [];
+    for (const pattern of [...passage.match, ...local]) {
       const p = ` ${normalize(pattern).trim()} `;
       if (!q.includes(p)) continue;
       if (!/[0-9]/.test(pattern) && !asksContext) continue;
@@ -126,20 +144,21 @@ export function findPassage(question) {
   return best?.passage ?? null;
 }
 
-const BOOK_LABEL = { tanakh: 'Tanakh', bible: 'Bible', quran: "Qur'an" };
-
 export function passageAnswer(passage) {
+  const ref = tr('passages', passage.ref, 'ref', passage.ref);
   return {
     id: 'passage',
-    title: `Historical context · ${passage.ref}`,
-    answer: [...passage.context, `${BOOK_LABEL[passage.book]} passage. Dates are common scholarly estimates; religious traditions may date it differently.`],
+    title: t('passageTitle', { ref }),
+    answer: [...tr('passages', passage.ref, 'context', passage.context), t('passageNote', { book: t(`short.${passage.book}`) })],
     books: [passage.book],
   };
 }
 
+// ---------- Answer ----------
+
 export function answer(question) {
   const q = normalize(question);
-  if (q.trim().length < 2) return FALLBACK;
+  if (q.trim().length < 2) return fallback();
   // A named chapter: the passage's historical context when we have it and that's what is asked,
   // otherwise the study guide for that chapter (main idea, people, ethics, words, interpretations…)
   const passage = findPassage(question);
@@ -156,7 +175,7 @@ export function answer(question) {
   if ((!best || best.topic.id === 'profile') && named.length) {
     return named.length > 1 ? compose(DIFFERENCES, books) : compose(PROFILE, books);
   }
-  if (!best || best.topic.id === 'profile') return FALLBACK;
+  if (!best || best.topic.id === 'profile') return fallback();
   return compose(best.topic, books);
 }
 
@@ -172,3 +191,9 @@ const FALLBACK = {
   ],
 };
 export { FALLBACK };
+
+/** The "I don't know that one" answer, in the current language. */
+export function fallback() {
+  const local = languagePack()?.fallback;
+  return local ? { id: 'unknown', title: local.title, answer: local.answer } : FALLBACK;
+}

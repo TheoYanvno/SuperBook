@@ -3,6 +3,7 @@ import { answer } from './answers.js';
 import { SandWriter } from './sand.js';
 import { DesertAmbience } from './music.js';
 import { FACTS } from './facts.js';
+import { LANGS, setLanguage, t, tr, lang, langInfo } from './i18n.js';
 
 const $ = (id) => document.getElementById(id);
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -16,15 +17,29 @@ async function openBook(key) {
   current = { key, section: null, chapter: 1 };
   const dialog = $('reader');
   dialog.className = `reader ${key}`;
-  $('readerTitle').textContent = book.title;
-  $('readerFaith').textContent = `${book.subtitle} · ${book.faith}`;
-  $('credit').textContent = book.credit;
-  $('sectionLabel').textContent = book.sectionWord;
-  $('verses').innerHTML = '<p class="loading">Opening…</p>';
+  $('verses').innerHTML = `<p class="loading">${t('opening')}</p>`;
+  readerLabels();
   dialog.showModal();
   if (!book.sections) book.sections = await book.loadSections();
-  $('section').innerHTML = book.sections.map((s) => `<option value="${s.id}">${s.label}</option>`).join('');
+  fillSections();
   await goTo(book.sections[0].id, 1);
+}
+
+/** Reader title, credit and pickers in the current language. */
+function readerLabels() {
+  const key = current.key;
+  if (!key) return;
+  $('readerTitle').textContent = t(`book.${key}`);
+  $('readerFaith').textContent = `${t(`subtitle.${key}`)} · ${t(`faith.${key}`)}`;
+  $('credit').textContent = t(`credit.${key}`);
+  $('sectionLabel').textContent = t(BOOKS[key].sectionWord);
+}
+
+function fillSections() {
+  const book = BOOKS[current.key];
+  if (!book.sections) return;
+  $('section').innerHTML = book.sections.map((s) => `<option value="${s.id}">${escape(book.label(s))}</option>`).join('');
+  if (current.section) $('section').value = current.section;
 }
 
 function fillChapters() {
@@ -41,22 +56,23 @@ async function goTo(section, chapter) {
   current.chapter = chapter;
   $('section').value = section;
   fillChapters();
-  const id = `${current.key}|${section}|${chapter}`;
-  $('verses').innerHTML = '<p class="loading">Turning the page…</p>';
+  const id = `${lang()}|${current.key}|${section}|${chapter}`;
+  $('verses').innerHTML = `<p class="loading">${t('turning')}</p>`;
   try {
     if (!cache.has(id)) cache.set(id, await book.load(section, chapter));
     const verses = cache.get(id);
-    if (id !== `${current.key}|${current.section}|${current.chapter}`) return;   // user moved on
+    if (id !== `${lang()}|${current.key}|${current.section}|${current.chapter}`) return;   // user moved on
     const showOriginal = $('original').checked;
-    $('verses').innerHTML = verses.map((v) => `
-      <p class="verse"><sup>${v.n}</sup> ${escape(v.text)}
+    const note = verses.fallback ? `<p class="fallback-note">${escape(t('inEnglish', { language: langInfo().name }))}</p>` : '';
+    $('verses').innerHTML = note + verses.map((v) => `
+      <p class="verse"${!v.original && v.dir ? ` dir="${v.dir}"` : ''}><sup>${v.n}</sup> ${escape(v.text)}
         ${showOriginal && v.original ? `<span class="original" dir="${v.dir}" lang="${current.key === 'quran' ? 'ar' : 'he'}">${escape(v.original)}</span>` : ''}
       </p>`).join('');
     $('verses').scrollTop = 0;
     $('originalWrap').hidden = !verses.some((v) => v.original);
   } catch (err) {
     cache.delete(id);
-    $('verses').innerHTML = `<p class="loading">${escape(err.message || 'Could not load this page.')} Check your internet connection and try again.</p>`;
+    $('verses').innerHTML = `<p class="loading">${escape(err.message || t('loadError'))} ${escape(t('checkConnection'))}</p>`;
   }
 }
 
@@ -86,15 +102,17 @@ $('reader').addEventListener('click', (e) => { if (e.target === $('reader')) $('
 const writer = new SandWriter($('sand'));
 
 let lastTopic = null;
+let lastQuestion = null;
 
 function ask(question) {
   const topic = answer(question);
   lastTopic = topic;
+  lastQuestion = question;
   $('spoken').textContent = `${topic.title}. ${topic.answer.join(' ')}`;   // for screen readers
   $('sourceLink').hidden = !topic.source;            // study answers link to the passage itself
   if (topic.source) { $('sourceLink').href = topic.source.url; $('sourceLink').textContent = `${topic.source.label} ↗`; }
   $('sandWrap').hidden = false;          // must be visible so the canvas has a width
-  writer.write(topic.title, topic.answer, { reducedMotion });
+  writer.write(topic.title, topic.answer, { reducedMotion, dir: langInfo().dir });
   $('sandWrap').scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
 }
 
@@ -103,26 +121,26 @@ $('askForm').addEventListener('submit', (e) => {
   const q = $('question').value.trim();
   if (q) ask(q);
 });
-$('smooth').onclick = () => { lastTopic = null; writer.smooth(); setTimeout(() => { $('sandWrap').hidden = true; }, 450); };
+$('smooth').onclick = () => { lastTopic = null; lastQuestion = null; writer.smooth(); setTimeout(() => { $('sandWrap').hidden = true; }, 450); };
 
 // Redraw the writing at the new width when the window is resized or the phone is rotated
 let resizeTimer;
 addEventListener('resize', () => {
   clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(() => { if (lastTopic) writer.write(lastTopic.title, lastTopic.answer, { reducedMotion: true }); }, 200);
+  resizeTimer = setTimeout(() => { if (lastTopic) writer.write(lastTopic.title, lastTopic.answer, { reducedMotion: true, dir: langInfo().dir }); }, 200);
 });
 
 // ---------- Compare the books side by side ----------
-const BOOK_NAMES = { tanakh: 'Tanakh', bible: 'Bible', quran: "Qur'an" };
 
 function renderFacts() {
   const books = [...document.querySelectorAll('.pick input:checked')].map((b) => b.value);
   const facts = $('facts');
   facts.style.setProperty('--cols', books.length);
+  const name = (b) => t(`short.${b}`);
   facts.innerHTML = '<div class="corner" role="columnheader"></div>'
-    + books.map((b) => `<div class="head ${b}" role="columnheader">${BOOK_NAMES[b]}</div>`).join('')
-    + FACTS.map((row) => `<div class="row-label" role="rowheader">${escape(row.label)}</div>`
-      + books.map((b) => `<div role="cell" aria-label="${BOOK_NAMES[b]}">${escape(row[b])}</div>`).join('')).join('');
+    + books.map((b) => `<div class="head ${b}" role="columnheader">${escape(name(b))}</div>`).join('')
+    + FACTS.map((row, i) => `<div class="row-label" role="rowheader">${escape(tr('facts', i, 'label', row.label))}</div>`
+      + books.map((b) => `<div role="cell" aria-label="${escape(name(b))}">${escape(tr('facts', i, b, row[b]))}</div>`).join('')).join('');
 }
 
 document.querySelector('.pick').addEventListener('change', (e) => {
@@ -145,7 +163,7 @@ const wanted = () => { try { return localStorage.getItem(PREF) === 'on'; } catch
 
 function setMusic(on) {
   $('music').setAttribute('aria-pressed', String(on));
-  $('music').querySelector('.label').textContent = on ? 'Music on' : 'Music off';
+  $('music').querySelector('.label').textContent = t(on ? 'musicOn' : 'musicOff');
   if (on) ambience.start(); else ambience.stop();
 }
 $('music').onclick = () => {
@@ -160,3 +178,43 @@ if (wanted()) {
   addEventListener('pointerdown', resume, { once: true });
   addEventListener('keydown', resume, { once: true });
 }
+
+// ---------- Language ----------
+const LANG_PREF = 'superbook-lang';
+const savedLanguage = () => { try { return localStorage.getItem(LANG_PREF); } catch { return null; } };
+
+/** Puts every piece of page text in the current language and redraws what is on screen. */
+function applyLanguage() {
+  const { code, dir } = langInfo();
+  document.documentElement.lang = code;
+  document.documentElement.dir = dir;
+  document.title = t('pageTitle');
+  document.querySelector('meta[name="description"]').content = t('pageDescription');
+  document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => { el.placeholder = t(el.dataset.i18nPlaceholder); });
+  document.querySelectorAll('[data-i18n-aria-label]').forEach((el) => el.setAttribute('aria-label', t(el.dataset.i18nAriaLabel)));
+  document.querySelectorAll('[data-i18n-title]').forEach((el) => { el.title = t(el.dataset.i18nTitle); });
+  document.querySelectorAll('.book').forEach((el) => el.setAttribute('aria-label', t('openBook', { book: t(`book.${el.dataset.book}`) })));
+  $('lang').setAttribute('aria-label', t('language'));
+  $('music').querySelector('.label').textContent = t($('music').getAttribute('aria-pressed') === 'true' ? 'musicOn' : 'musicOff');
+  if (!$('compare').hidden) renderFacts();
+  if (lastQuestion) {                                    // rewrite the current answer in the new language
+    const topic = answer(lastQuestion);
+    lastTopic = topic;
+    $('spoken').textContent = `${topic.title}. ${topic.answer.join(' ')}`;
+    $('sourceLink').hidden = !topic.source;
+    if (topic.source) { $('sourceLink').href = topic.source.url; $('sourceLink').textContent = `${topic.source.label} ↗`; }
+    writer.write(topic.title, topic.answer, { reducedMotion: true, dir });
+  }
+  if ($('reader').open) { readerLabels(); fillSections(); goTo(current.section, current.chapter); }
+}
+
+$('lang').innerHTML = LANGS.map((l) => `<option value="${l.code}" lang="${l.code}">${l.name}</option>`).join('');
+$('lang').onchange = async (e) => {
+  await setLanguage(e.target.value);
+  try { localStorage.setItem(LANG_PREF, lang()); } catch { /* storage may be blocked */ }
+  applyLanguage();
+};
+await setLanguage(savedLanguage() ?? 'en').catch(() => setLanguage('en'));
+$('lang').value = lang();
+applyLanguage();

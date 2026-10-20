@@ -1,3 +1,5 @@
+import { t, lang, bookName } from './i18n.js';
+
 // Table of contents for each book. Texts are loaded at runtime from free public APIs,
 // using public-domain translations (World English Bible, JPS 1917, Pickthall 1930).
 
@@ -40,56 +42,108 @@ export const BIBLE = [
 export const ORTHODOX_EXTRA = ['Prayer of Manasses', '1 Esdras', 'Tobit', 'Judith', '1 Maccabees', '2 Maccabees', '3 Maccabees',
   'Wisdom', 'Sirach', 'Baruch', 'sus', 'Bel and the Dragon', '4 Maccabees'];
 
+// The 66 books shared by every Christian Bible, in the order Bible APIs number them (Genesis = 1, Revelation = 66).
+const NUMBERED = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel',
+  '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles', 'Ezra', 'Nehemiah', 'Esther', 'Job', 'Psalms', 'Proverbs', 'Ecclesiastes',
+  'Song of Solomon', 'Isaiah', 'Jeremiah', 'Lamentations', 'Ezekiel', 'Daniel', 'Hosea', 'Joel', 'Amos', 'Obadiah', 'Jonah', 'Micah',
+  'Nahum', 'Habakkuk', 'Zephaniah', 'Haggai', 'Zechariah', 'Malachi', 'Matthew', 'Mark', 'Luke', 'John', 'Acts', 'Romans',
+  '1 Corinthians', '2 Corinthians', 'Galatians', 'Ephesians', 'Philippians', 'Colossians', '1 Thessalonians', '2 Thessalonians',
+  '1 Timothy', '2 Timothy', 'Titus', 'Philemon', 'Hebrews', 'James', '1 Peter', '2 Peter', '1 John', '2 John', '3 John', 'Jude', 'Revelation'];
+
+// Public-domain Bibles in other languages, served by getbible.net (by book number). Where a language has no
+// free translation of a book (the extra Orthodox books, the Hebrew New Testament, Arabic), the World English Bible is shown.
+const GETBIBLE = {
+  es: { ot: 'valera', nt: 'valera' },          // Reina-Valera 1909
+  fr: { ot: 'ls1910', nt: 'ls1910' },          // Louis Segond 1910
+  de: { ot: 'elberfelder', nt: 'elberfelder' }, // Elberfelder 1871
+  la: { ot: 'vulgate', nt: 'vulgate' },        // Clementine Vulgate
+  el: { ot: 'lxx', nt: 'tischendorf' },        // Septuagint (Psalms in its numbering) and Tischendorf's New Testament
+  he: { ot: 'codex' },                         // Westminster Leningrad Codex (Old Testament only)
+};
+
+// Free Tanakh translations on Sefaria, by language. Hebrew readers get the Hebrew text itself.
+const SEFARIA = {
+  en: 'english|The Holy Scriptures: A New Translation (JPS 1917)',
+  fr: 'french|Bible du Rabbinat 1899 [fr]',
+  de: 'german|Die vier und zwanzig Bücher der Heiligen Schrift. Unter der Redaction von Dr. Zunz übersetzt von H. Arnheim, Dr. Julius Fürst, Dr. M. Sachs. Berlin 1838 [de]',
+};
+
+// Sefaria's Tanakh names → the English names used for translating book names
+const TANAKH_NAMES = { 'I Samuel': '1 Samuel', 'II Samuel': '2 Samuel', 'I Kings': '1 Kings', 'II Kings': '2 Kings',
+  'I Chronicles': '1 Chronicles', 'II Chronicles': '2 Chronicles' };
+
+/** A Bible book's label in the current language, keeping the Orthodox names ("3 Kingdoms (1 Kings)"). */
+function bibleLabel([id, , label = id]) {
+  const kingdoms = label.match(/^(\d) Kingdoms \((.+)\)$/);
+  if (kingdoms) return `${t('kingdoms', { n: kingdoms[1] })} (${bookName(kingdoms[2])})`;
+  const extra = label.match(/^(.+) \((.+)\)$/);                 // "2 Esdras (Ezra)", "4 Maccabees (appendix)"
+  if (extra) return `${bookName(extra[1])} (${extra[2] === 'appendix' ? t('appendix') : bookName(extra[2])})`;
+  return bookName(label);
+}
+
+const fetchJson = async (url) => {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(res.status === 429 ? t('tooFast') : t('loadError'));
+  return res.json();
+};
+
+/** Marks verses shown in English because the current language has no free translation of them. */
+const inEnglish = (verses) => Object.assign(verses, { fallback: lang() !== 'en' });
+
 export const BOOKS = {
   tanakh: {
-    title: 'Tanakh',
-    subtitle: 'The Hebrew Bible',
-    faith: 'Judaism',
+    key: 'tanakh',
     sections: TANAKH.map(([name, chapters]) => ({ id: name, label: name, chapters })),
-    sectionWord: 'Book',
-    credit: 'English: The Holy Scriptures (JPS 1917), public domain. Hebrew: Miqra according to the Masorah (CC BY-SA). Text served by Sefaria.org.',
+    label: (s) => bookName(TANAKH_NAMES[s.id] ?? s.id),
+    sectionWord: 'sectionBook',
     async load(section, chapter) {
       const ref = encodeURIComponent(`${section}.${chapter}`);
-      const en = encodeURIComponent('english|The Holy Scriptures: A New Translation (JPS 1917)');
-      const res = await fetch(`https://www.sefaria.org/api/v3/texts/${ref}?version=${en}&version=hebrew`);
-      if (!res.ok) throw new Error('Could not load this chapter.');
-      const data = await res.json();
-      const english = data.versions.find((v) => v.actualLanguage === 'en' || v.language === 'en')?.text ?? [];
+      const code = lang();
+      const data = await fetchJson(`https://www.sefaria.org/api/v3/texts/${ref}?version=${encodeURIComponent(SEFARIA[code] ?? SEFARIA.en)}&version=hebrew`);
       const hebrew = data.versions.find((v) => v.actualLanguage === 'he' || v.language === 'he')?.text ?? [];
-      return english.map((text, i) => ({ n: i + 1, text: clean(text), original: clean(hebrew[i] ?? ''), dir: 'rtl' }));
+      if (code === 'he') return hebrew.map((text, i) => ({ n: i + 1, text: clean(text), dir: 'rtl' }));
+      const translation = data.versions.find((v) => v.actualLanguage !== 'he' && v.language !== 'he')?.text ?? [];
+      const verses = translation.map((text, i) => ({ n: i + 1, text: clean(text), original: clean(hebrew[i] ?? ''), dir: 'rtl' }));
+      return SEFARIA[code] ? verses : inEnglish(verses);
     },
   },
   bible: {
-    title: 'Holy Bible',
-    subtitle: 'Eastern Orthodox canon',
-    faith: 'Christianity',
+    key: 'bible',
     sections: BIBLE.map(([id, chapters, label = id]) => ({ id, label, chapters })),
-    sectionWord: 'Book',
-    credit: 'World English Bible, public domain, in the books and order of the Eastern Orthodox Bible. Text served by bible-api.com. Not available from this free source: the Letter of Jeremiah, Psalm 151 and the Greek additions to Esther and Daniel.',
+    label: (s) => bibleLabel(BIBLE.find(([id]) => id === s.id)),
+    sectionWord: 'sectionBook',
     async load(section, chapter) {
-      const res = await fetch(`https://bible-api.com/${encodeURIComponent(`${section} ${chapter}`)}?translation=web`);
-      if (!res.ok) throw new Error(res.status === 429 ? 'Reading too fast: wait a few seconds and try again.' : 'Could not load this chapter.');
-      const data = await res.json();
-      return data.verses.map((v) => ({ n: v.verse, text: v.text.replace(/\s+/g, ' ').trim() }));
+      const nr = NUMBERED.indexOf(section) + 1;
+      const source = GETBIBLE[lang()];
+      const key = nr && source && (nr <= 39 ? source.ot : source.nt);
+      if (key) {
+        try {
+          const data = await fetchJson(`https://api.getbible.net/v2/${key}/${nr}/${chapter}.json`);
+          const dir = data.direction === 'RTL' ? 'rtl' : undefined;
+          return data.verses.map((v) => ({ n: v.verse, text: v.text.replace(/\s+/g, ' ').trim(), dir }));
+        } catch {
+          // Some chapters are numbered differently in the Hebrew and Greek texts (e.g. Malachi 4, Joel 3);
+          // show the English chapter rather than nothing
+        }
+      }
+      const data = await fetchJson(`https://bible-api.com/${encodeURIComponent(`${section} ${chapter}`)}?translation=web`);
+      return inEnglish(data.verses.map((v) => ({ n: v.verse, text: v.text.replace(/\s+/g, ' ').trim() })));
     },
   },
   quran: {
-    title: "Qur'an",
-    subtitle: 'القرآن الكريم',
-    faith: 'Islam',
+    key: 'quran',
     sections: null,            // loaded from the API (114 surahs)
-    sectionWord: 'Surah',
-    credit: 'Arabic: Uthmani script. English: Marmaduke Pickthall (1930), public domain. Text served by alquran.cloud.',
+    label: (s) => (lang() === 'ar' ? `${s.id}. ${s.arabic}` : lang() === 'en' ? `${s.id}. ${s.english} (${s.meaning})` : `${s.id}. ${s.english}`),
+    sectionWord: 'sectionSurah',
     async loadSections() {
-      const res = await fetch('https://api.alquran.cloud/v1/surah');
-      const data = await res.json();
-      return data.data.map((s) => ({ id: s.number, label: `${s.number}. ${s.englishName} (${s.englishNameTranslation})`, chapters: 1 }));
+      const data = await fetchJson('https://api.alquran.cloud/v1/surah');
+      return data.data.map((s) => ({ id: s.number, arabic: s.name, english: s.englishName, meaning: s.englishNameTranslation, chapters: 1 }));
     },
     async load(section) {
-      const res = await fetch(`https://api.alquran.cloud/v1/surah/${section}/editions/quran-uthmani,en.pickthall`);
-      if (!res.ok) throw new Error('Could not load this surah.');
-      const [arabic, english] = (await res.json()).data;
-      return english.ayahs.map((a, i) => ({ n: a.numberInSurah, text: a.text, original: arabic.ayahs[i].text.replace(/^﻿/, ''), dir: 'rtl' }));
+      const [arabic, english] = (await fetchJson(`https://api.alquran.cloud/v1/surah/${section}/editions/quran-uthmani,en.pickthall`)).data;
+      const original = (i) => arabic.ayahs[i].text.replace(/^﻿/, '');
+      if (lang() === 'ar') return english.ayahs.map((a, i) => ({ n: a.numberInSurah, text: original(i), dir: 'rtl' }));
+      return inEnglish(english.ayahs.map((a, i) => ({ n: a.numberInSurah, text: a.text, original: original(i), dir: 'rtl' })));
     },
   },
 };

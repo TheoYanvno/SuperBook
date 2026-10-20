@@ -86,7 +86,7 @@ main { max-width: 1000px; margin: 0 auto; padding: 0 16px 60px; }
 
 @keyframes rise { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
 @keyframes openBook { from { opacity: 0; transform: perspective(1200px) rotateY(-25deg) scale(.92); } to { opacity: 1; transform: none; } }
-@media (max-width: 560px) { .shelf { padding-top: 70px; gap: 10px; flex-wrap: nowrap; } .book { width: 30vw; gap: 6px; } .book .title { font-size: .95rem; } .book .faith { font-size: .6rem; letter-spacing: .08em; } #askForm { flex-direction: column; } }
+@media (max-width: 560px) { .shelf { padding-top: 70px; gap: 10px; flex-wrap: nowrap; } .book { width: 30vw; gap: 6px; } .book .title { font-size: .95rem; } .book .faith { font-size: .58rem; letter-spacing: .03em; padding: 0 6px; overflow-wrap: anywhere; } header { padding-top: 62px; } #askForm { flex-direction: column; } }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 
 /* ---------- Compare the books ---------- */
@@ -121,3 +121,14 @@ main { max-width: 1000px; margin: 0 auto; padding: 0 16px 60px; }
 .music-toggle[aria-pressed="true"] .music-icon { animation: sway 2.4s ease-in-out infinite alternate; color: #ffd27a; }
 @keyframes sway { from { transform: translateY(1px) rotate(-8deg); } to { transform: translateY(-2px) rotate(8deg); } }
 @media (prefers-reduced-motion: reduce) { .music-toggle .music-icon { animation: none !important; } }
+
+/* Language menu in the top corner (left in right-to-left languages) */
+.lang-picker { position: absolute; top: 14px; inset-inline-end: 14px; z-index: 20; display: flex; align-items: center; gap: 6px;
+  padding: 4px 8px 4px 10px; border-radius: 999px; background: rgba(43, 22, 18, .72); color: #fff3d9; box-shadow: 0 4px 14px rgba(0, 0, 0, .25); }
+.lang-picker select { font: inherit; font-size: .9rem; background: transparent; color: inherit; border: 0; padding: 4px 2px; cursor: pointer; }
+.lang-picker select option { color: #2b1a10; background: #fff8e6; }
+.lang-picker .globe { font-size: .95rem; }
+.fallback-note { margin: 0 0 12px; padding: 8px 12px; border-radius: 10px; background: rgba(184, 134, 70, .15); font-size: .9rem; }
+.verse[dir="rtl"] { text-align: right; font-size: 1.15em; line-height: 1.9; }
+[dir="rtl"] .reader-nav, [dir="rtl"] .reader-head { direction: rtl; }
+[dir="rtl"] .arrows button { transform: scaleX(-1); }

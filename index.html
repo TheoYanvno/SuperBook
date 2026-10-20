@@ -67,24 +67,28 @@
     <div class="dust"></div>
   </div>
 
-  <button id="music" class="music-toggle" aria-pressed="false" title="Play calm desert ambience">
+  <label class="lang-picker"><span class="globe" aria-hidden="true">🌐</span><span class="visually-hidden" data-i18n="language">Language</span>
+    <select id="lang" aria-label="Language"></select>
+  </label>
+
+  <button id="music" class="music-toggle" aria-pressed="false" title="Play calm desert ambience" data-i18n-title="musicTitle">
     <span class="music-icon" aria-hidden="true">♪</span> <span class="label">Music off</span>
   </button>
 
   <header>
     <h1>SuperBook</h1>
-    <p>Three sacred books of the Abrahamic faiths. Open a book to read it, ask the sand a question, or compare them side by side.</p>
+    <p data-i18n="tagline">Three sacred books of the Abrahamic faiths. Open a book to read it, ask the sand a question, or compare them side by side.</p>
   </header>
 
   <main>
-    <section class="shelf" aria-label="Books">
+    <section class="shelf" aria-label="Books" data-i18n-aria-label="books">
       <button class="book tanakh" data-book="tanakh" aria-label="Open the Tanakh">
         <span class="spine"></span>
         <svg class="emblem" viewBox="0 0 100 100" aria-hidden="true">
           <polygon points="50,8 86,71 14,71" /><polygon points="50,92 14,29 86,29" />
         </svg>
-        <span class="title">Tanakh</span>
-        <span class="faith">Judaism</span>
+        <span class="title" data-i18n="book.tanakh">Tanakh</span>
+        <span class="faith" data-i18n="faith.tanakh">Judaism</span>
       </button>
 
       <button class="book bible" data-book="bible" aria-label="Open the Holy Bible">
@@ -92,8 +96,8 @@
         <svg class="emblem" viewBox="0 0 100 100" aria-hidden="true">
           <path d="M43 8 h14 v24 h20 v14 h-20 v46 h-14 v-46 h-20 v-14 h20 z" />
         </svg>
-        <span class="title">Holy Bible</span>
-        <span class="faith">Christianity</span>
+        <span class="title" data-i18n="book.bible">Holy Bible</span>
+        <span class="faith" data-i18n="faith.bible">Christianity</span>
       </button>
 
       <button class="book quran" data-book="quran" aria-label="Open the Qur'an">
@@ -102,38 +106,38 @@
           <rect x="22" y="22" width="56" height="56" /><rect x="22" y="22" width="56" height="56" transform="rotate(45 50 50)" />
           <circle cx="50" cy="50" r="10" />
         </svg>
-        <span class="title">Qur'an</span>
-        <span class="faith">Islam</span>
+        <span class="title" data-i18n="book.quran">Qur'an</span>
+        <span class="faith" data-i18n="faith.quran">Islam</span>
       </button>
     </section>
 
     <section class="ask" aria-labelledby="askTitle">
-      <h2 id="askTitle">Ask the sand</h2>
+      <h2 id="askTitle" data-i18n="askTitle">Ask the sand</h2>
       <form id="askForm">
-        <input id="question" type="text" placeholder="Ask anything, e.g. How do the Bible and the Qur'an see Jesus?" autocomplete="off" aria-label="Your question">
-        <button type="submit">Ask</button>
+        <input id="question" type="text" placeholder="Ask anything, e.g. How do the Bible and the Qur'an see Jesus?" autocomplete="off" aria-label="Your question" data-i18n-placeholder="askPlaceholder" data-i18n-aria-label="askLabel">
+        <button type="submit" data-i18n="askButton">Ask</button>
       </form>
-      <button id="compareToggle" class="compare-toggle" aria-expanded="false" aria-controls="compare">Compare the books side by side</button>
+      <button id="compareToggle" class="compare-toggle" aria-expanded="false" aria-controls="compare" data-i18n="compareToggle">Compare the books side by side</button>
     </section>
 
     <section id="compare" class="compare" hidden aria-labelledby="compareTitle">
-      <h2 id="compareTitle">The books side by side</h2>
+      <h2 id="compareTitle" data-i18n="compareTitle">The books side by side</h2>
       <fieldset class="pick">
-        <legend>Show</legend>
-        <label><input type="checkbox" value="tanakh" checked> Tanakh</label>
-        <label><input type="checkbox" value="bible" checked> Bible</label>
-        <label><input type="checkbox" value="quran" checked> Qur'an</label>
+        <legend data-i18n="compareShow">Show</legend>
+        <label><input type="checkbox" value="tanakh" checked> <span data-i18n="short.tanakh">Tanakh</span></label>
+        <label><input type="checkbox" value="bible" checked> <span data-i18n="short.bible">Bible</span></label>
+        <label><input type="checkbox" value="quran" checked> <span data-i18n="short.quran">Qur'an</span></label>
       </fieldset>
-      <div id="facts" class="facts" role="table" aria-label="Comparison of the three books"></div>
-      <p class="note">Rounded figures. Ask the sand for more detail on any row.</p>
+      <div id="facts" class="facts" role="table" aria-label="Comparison of the three books" data-i18n-aria-label="compareTable"></div>
+      <p class="note" data-i18n="compareNote">Rounded figures. Ask the sand for more detail on any row.</p>
     </section>
 
     <section id="sandWrap" class="sand-wrap" hidden>
       <canvas id="sand" aria-hidden="true"></canvas>
       <p id="spoken" class="visually-hidden" aria-live="polite"></p>
       <a id="sourceLink" class="source-link" target="_blank" rel="noopener" hidden></a>
-      <button id="smooth" class="smooth">Let the wind smooth the sand</button>
-      <p class="note">Simplified overview. Beliefs and practices vary within each tradition.</p>
+      <button id="smooth" class="smooth" data-i18n="smooth">Let the wind smooth the sand</button>
+      <p class="note" data-i18n="sandNote">Simplified overview. Beliefs and practices vary within each tradition.</p>
     </section>
   </main>
 
@@ -144,13 +148,13 @@
           <h2 id="readerTitle"></h2>
           <p id="readerFaith" class="muted"></p>
         </div>
-        <button id="close" class="close" aria-label="Close book">✕</button>
+        <button id="close" class="close" aria-label="Close book" data-i18n-aria-label="closeBook">✕</button>
       </header>
       <nav class="reader-nav">
         <label><span id="sectionLabel">Book</span> <select id="section"></select></label>
-        <label id="chapterWrap">Chapter <select id="chapter"></select></label>
-        <label id="originalWrap" class="toggle"><input type="checkbox" id="original" checked> Original language</label>
-        <span class="arrows"><button id="prev" aria-label="Previous">‹</button><button id="next" aria-label="Next">›</button></span>
+        <label id="chapterWrap"><span data-i18n="chapter">Chapter</span> <select id="chapter"></select></label>
+        <label id="originalWrap" class="toggle"><input type="checkbox" id="original" checked> <span data-i18n="original">Original language</span></label>
+        <span class="arrows"><button id="prev" aria-label="Previous" data-i18n-aria-label="previous">‹</button><button id="next" aria-label="Next" data-i18n-aria-label="next">›</button></span>
       </nav>
       <article id="verses" class="verses"></article>
       <footer id="credit" class="credit"></footer>

@@ -27,7 +27,8 @@ export class SandWriter {
     return lines;
   }
 
-  write(title, paragraphs, { reducedMotion = false } = {}) {
+  write(title, paragraphs, { reducedMotion = false, dir = 'ltr' } = {}) {
+    const rtl = dir === 'rtl';            // Hebrew and Arabic are written from the right
     cancelAnimationFrame(this.frame);
     const dpr = window.devicePixelRatio || 1;
     const width = this.canvas.clientWidth;
@@ -46,8 +47,11 @@ export class SandWriter {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     // Each line becomes a job that reveals left to right.
-    const jobs = titleLines.map((text, i) => ({ text, font: titleFont, x: pad, y: pad + size + 6 + i * (size + 8) * 1.3 }));
-    lines.forEach((text, i) => jobs.push({ text, font, x: pad, y: pad + titleH + (i + 0.8) * lineH }));
+    const x = rtl ? width - pad : pad;
+    const jobs = titleLines.map((text, i) => ({ text, font: titleFont, x, y: pad + size + 6 + i * (size + 8) * 1.3 }));
+    lines.forEach((text, i) => jobs.push({ text, font, x, y: pad + titleH + (i + 0.8) * lineH }));
+    ctx.direction = rtl ? 'rtl' : 'ltr';
+    ctx.textAlign = rtl ? 'right' : 'left';
     for (const job of jobs) { ctx.font = job.font; job.width = ctx.measureText(job.text).width; }
     // 900 px per second, but faster for long answers so none takes more than about 9 seconds
     const textWidth = jobs.reduce((sum, job) => sum + job.width, 0);
@@ -64,7 +68,7 @@ export class SandWriter {
     const groove = (job, upTo) => {
       ctx.save();
       ctx.beginPath();
-      ctx.rect(job.x - 4, job.y - 60, upTo + 8, 90);
+      ctx.rect(rtl ? job.x - upTo - 4 : job.x - 4, job.y - 60, upTo + 8, 90);
       ctx.clip();
       ctx.font = job.font;
       // light edge below, dark shadow above: looks pressed into the sand
@@ -86,7 +90,7 @@ export class SandWriter {
         if (shown < job.width && !reducedMotion) {
           // the "finger" throws a few grains up and back
           for (let k = 0; k < 3; k++) {
-            this.grains.push({ x: job.x + shown, y: job.y - 6, vx: -Math.random() * 1.6, vy: -Math.random() * 2.2, life: 1 });
+            this.grains.push({ x: rtl ? job.x - shown : job.x + shown, y: job.y - 6, vx: (rtl ? 1 : -1) * Math.random() * 1.6, vy: -Math.random() * 2.2, life: 1 });
           }
         }
       }

@@ -5,8 +5,10 @@
 // 2. questionType() works out which kind of study question it is (main idea, people, ethics, context…).
 // 3. studyAnswer() returns the matching guidance, more questions to study, and a link to read the passage.
 import { GUIDANCE, QUESTIONS, FIT, CHAPTERS } from './studydata.js';
+import { t, languagePack, bookName } from './i18n.js';
+import { normalize, localize, startsWords, wordForms } from './text.js';
 
-const lower = (text) => ` ${String(text).toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9]+/g, ' ').trim()} `;
+const lower = (text) => normalize(text);
 
 // ---------- Chapters ----------
 
@@ -15,7 +17,7 @@ const ORDINALS = [[/\b(first|1st|i)\s+(?=samuel|kings|chronicles|corinthians|the
   [/\bpsalm\b/g, 'psalms'], [/\bchapter\s+/g, '']];
 
 function cleanRefs(question) {
-  let q = lower(question);
+  let q = localize(question);              // "Génesis 12", "سورة 2" → English names
   for (const [pattern, replacement] of ORDINALS) q = q.replace(pattern, replacement);
   return q.replace(/ (\d+) of (?:the book of )?([a-z0-9 ]+?) /, (m, n, book) => ` ${book} ${n} `);   // "chapter 12 of genesis"
 }
@@ -56,14 +58,14 @@ export function findChapter(question) {
   const surah = findSurah(q);
   if (surah) {
     const [n, name] = surah;
-    return { book: 'quran', ref: `Surah ${n} (${name})`, label: `Surah ${n} (${name})`, url: `https://quran.com/${n}`, source: 'Quran.com' };
+    return { book: 'quran', ref: `Surah ${n} (${name})`, label: `Surah ${n} (${name})`, surah: [n, name], url: `https://quran.com/${n}`, source: 'Quran.com' };
   }
   const m = q.match(BOOK_REF);
   if (!m) return null;
   const ref = `${TITLE(m[1])} ${m[2]}`.replace(/^(\d) /, '$1 ');
   const inBible = CHAPTERS.bible.includes(ref);
   const inTorah = CHAPTERS.tanakh.includes(ref);
-  const wantsTorah = JEWISH.some((w) => q.includes(w));
+  const wantsTorah = JEWISH.some((w) => q.includes(w)) || (languagePack()?.bookWords?.tanakh ?? []).some((w) => startsWords(q, w));
   const book = inTorah && (wantsTorah || !inBible) ? 'tanakh' : inBible ? 'bible' : null;
   if (!book) return null;
   if (book === 'tanakh') {
@@ -94,9 +96,11 @@ const IGNORE = new Set(['torah', 'quran', 'koran', 'surah', 'sura', 'bible', 'ta
 /** Which GUIDANCE fits the question (index), and how strongly it matched (0 = no clear kind). */
 export function questionType(question) {
   const words = lower(question).trim().split(' ').filter((w) => !IGNORE.has(w) || w === 'hebrew');
+  const local = languagePack()?.studyTypeWords ?? [];
   let best = 0, score = 0;
-  TYPE_WORDS.forEach((stems, i) => {
-    const hits = words.filter((w) => stems.some((s) => w.startsWith(s))).length;
+  TYPE_WORDS.forEach((english, i) => {
+    const stems = [...english, ...(local[i] ?? []).map((w) => normalize(w).trim())];
+    const hits = words.filter((w) => wordForms(w).some((f) => stems.some((s) => s && f.startsWith(s)))).length;
     if (hits > score) { best = i; score = hits; }
   });
   return { type: best, score };
@@ -106,18 +110,32 @@ export function questionType(question) {
 
 const fill = (text, ref) => text.replaceAll('{ref}', ref);
 
-/** Builds the answer for a chapter question. */
+/** A chapter's name in the current language: "Génesis 12", "Génesis 12 (Torá)", "Sura 2 (Al-Baqarah)". */
+function localLabel({ book, ref, surah }) {
+  if (book === 'quran') return t('surahRef', { n: surah[0], name: languagePack()?.surahNames?.[surah[0]] ?? surah[1] });
+  const local = `${bookName(ref.replace(/ \d+$/, ''))} ${ref.match(/\d+$/)[0]}`;
+  return book === 'tanakh' ? t('torahSuffix', { ref: local }) : local;
+}
+
+/** Builds the answer for a chapter question, in the current language. */
 export function studyAnswer(question, chapter = findChapter(question)) {
   const { type } = questionType(question);
-  const { book, ref, label, url, source } = chapter;
+  const { book, url, source } = chapter;
+  const pack = languagePack();
+  const guidanceText = pack?.study?.guidance ?? GUIDANCE;
+  const questionText = pack?.study?.questions?.[book] ?? QUESTIONS[book];
+  const label = localLabel(chapter);
+  const ref = book === 'tanakh' ? label.replace(/\s*\(.*\)$/, '') : label;       // "Exodus 3", without "(Torah)"
   const asked = FIT[book].findIndex((g) => g.includes(type));
-  const guidance = (asked >= 0 ? FIT[book][asked] : [type]).map((g) => fill(GUIDANCE[g], ref));
-  const more = QUESTIONS[book].filter((_, i) => i !== asked).slice(0, 3).map((q) => fill(q, label.replace(/^Surah /, '').replace(/ \(Torah\)$/, '')));
+  const guidance = (asked >= 0 ? FIT[book][asked] : [type]).map((g) => fill(guidanceText[g], ref));
+  // The workbook's Qur'an questions already say "Surah {ref}", so they get the name without "Surah"
+  const questionRef = book === 'quran' ? `${chapter.surah[0]} (${pack?.surahNames?.[chapter.surah[0]] ?? chapter.surah[1]})` : ref;
+  const more = questionText.filter((_, i) => i !== asked).slice(0, 3).map((q) => fill(q, questionRef));
   return {
     id: 'study',
-    title: `${label} · how to study it`,
-    answer: [...guidance, `More questions to explore: ${more.join(' ')}`],                 // the page adds a link to read it
+    title: t('studyTitle', { ref: label }),
+    answer: [...guidance, t('studyMore', { questions: more.join(' ') })],    // the page adds a link to read it
     books: [book],
-    source: { url, label: `Read ${ref} at ${source}` },
+    source: { url, label: t('studyRead', { ref, source }) },
   };
 }
