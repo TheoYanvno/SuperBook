@@ -90,3 +90,7 @@ It can also be published for free with GitHub Pages (Settings → Pages → depl
 The comparisons are short, neutral summaries of what each tradition generally teaches. Every faith has a wide range of views within it, so treat them as a starting point, not the final word.
 
 Built with help from AI coding tools for planning, code review and tests.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
