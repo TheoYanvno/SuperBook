@@ -4,6 +4,7 @@ import { SandWriter } from './sand.js';
 import { DesertAmbience } from './music.js';
 import { FACTS } from './facts.js';
 import { LANGS, setLanguage, t, tr, lang, langInfo } from './i18n.js';
+import { parseLink, linkFor } from './links.js';
 
 const $ = (id) => document.getElementById(id);
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -12,7 +13,7 @@ const cache = new Map();
 // ---------- Reader ----------
 let current = { key: null, section: null, chapter: 1 };
 
-async function openBook(key) {
+async function openBook(key, start = null) {
   const book = BOOKS[key];
   current = { key, section: null, chapter: 1 };
   const dialog = $('reader');
@@ -22,7 +23,8 @@ async function openBook(key) {
   dialog.showModal();
   if (!book.sections) book.sections = await book.loadSections();
   fillSections();
-  await goTo(book.sections[0].id, 1);
+  const known = start?.section != null && book.sections.some((s) => String(s.id) === String(start.section));
+  await goTo(known ? book.sections.find((s) => String(s.id) === String(start.section)).id : book.sections[0].id, known ? start.chapter : 1);
 }
 
 /** Reader title, credit and pickers in the current language. */
@@ -56,6 +58,7 @@ async function goTo(section, chapter) {
   current.chapter = chapter;
   $('section').value = section;
   fillChapters();
+  try { history.replaceState(null, '', linkFor(current.key, section, chapter, location.pathname)); } catch { /* file:// pages */ }
   const id = `${lang()}|${current.key}|${section}|${chapter}`;
   $('verses').innerHTML = `<p class="loading">${t('turning')}</p>`;
   try {
@@ -96,6 +99,7 @@ $('prev').onclick = () => step(-1);
 $('next').onclick = () => step(1);
 $('original').onchange = () => goTo(current.section, current.chapter);
 $('close').onclick = () => $('reader').close();
+$('reader').addEventListener('close', () => { try { history.replaceState(null, '', location.pathname); } catch { /* file:// */ } });
 $('reader').addEventListener('click', (e) => { if (e.target === $('reader')) $('reader').close(); });
 
 // ---------- Ask the sand ----------
@@ -218,3 +222,7 @@ $('lang').onchange = async (e) => {
 await setLanguage(savedLanguage() ?? 'en').catch(() => setLanguage('en'));
 $('lang').value = lang();
 applyLanguage();
+
+// A link like ?book=Psalms&chapter=23 opens the reader at that chapter (see links.js).
+const link = parseLink(location.search);
+if (link) openBook(link.read, link);

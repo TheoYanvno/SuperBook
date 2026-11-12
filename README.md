@@ -59,6 +59,19 @@ Translations come from [getbible.net](https://getbible.net) and [Sefaria](https:
 
 The free Bible source doesn't have the Letter of Jeremiah, Psalm 151 or the Greek additions to Esther and Daniel (except Susanna and Bel), so those are the only parts of the Orthodox Bible missing from the reader.
 
+## Link to a chapter
+
+Any page can open SuperBook's reader at one chapter, which is how other projects link a passage here:
+
+| Link | Opens |
+| --- | --- |
+| [`?book=Psalms&chapter=23`](https://theoyanvno.github.io/SuperBook/?book=Psalms&chapter=23) | Psalm 23 in the Bible |
+| [`?book=1 Kingdoms&chapter=3`](https://theoyanvno.github.io/SuperBook/?book=1%20Kingdoms&chapter=3) | 1 Kingdoms (1 Samuel) 3: a book can be named by its id, its label or either name in the label |
+| [`?read=tanakh&book=Genesis&chapter=1`](https://theoyanvno.github.io/SuperBook/?read=tanakh&book=Genesis&chapter=1) | Genesis 1 in the Tanakh |
+| [`?read=quran&book=36`](https://theoyanvno.github.io/SuperBook/?read=quran&book=36) | Surah 36 |
+
+The address updates as you turn pages, so a chapter can be shared as it is. A chapter that doesn't exist opens chapter 1, and an unknown book opens the first one. `src/links.js` reads and builds these links.
+
 ## How it's built
 
 | File | What it does |
