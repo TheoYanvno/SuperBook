@@ -2,9 +2,9 @@
 
 **▶ [Live demo](https://theoyanvno.github.io/SuperBook/)**
 
-A web app for exploring the scriptures of the three Abrahamic faiths. Three books rest in a desert: the **Tanakh** (Judaism), the **Holy Bible** (Christianity) and the **Qur'an** (Islam). Click a book to open and read the complete text, chapter by chapter. Ask how the books differ, and the answer is written into the sand.
+A web app for reading and comparing the scriptures of the three Abrahamic faiths: the **Tanakh** (Judaism), the **Bible** (Christianity) and the **Qur'an** (Islam). Read any chapter in full, compare the three side by side, learn their history, beliefs and practice, follow a reading plan, and ask a question to see the answer written in the sand.
 
-**Tech:** JavaScript (ES modules) · HTML Canvas · CSS animations · public REST APIs · `node:test` · no frameworks
+**Tech:** JavaScript (ES modules) · HTML · CSS · SVG · HTML Canvas · public REST APIs · `localStorage` · `node:test` · no frameworks
 
 | Desktop | Phone |
 |---|---|
@@ -12,22 +12,27 @@ A web app for exploring the scriptures of the three Abrahamic faiths. Three book
 
 ## Features
 
-- **Read all three books in full**, with book/surah and chapter pickers and next/previous buttons
+- **Home:** a walled-city skyline at dusk, the three scriptures as cards (Tanakh in navy with the Star of David, the Bible in maroon with the cross, the Qur'an in green with the crescent and star), Explore & Study tiles, Key Differences at a Glance, The Three at a Glance and Continue Reading, which shows where you stopped in each scripture and how far through it you are. On a computer a sidebar lists every section, with a daily verse and its background; on a phone a bottom bar holds Home, Read, Learn, Tools and Profile.
+- **Read all three in full**, chapter by chapter, from a book list with Tanakh, Bible and Qur'an tabs:
   - Tanakh in the Jewish order (Torah, Prophets, Writings), in English with the Hebrew original
-  - Holy Bible in the Eastern Orthodox canon and order: the Old Testament following the Septuagint, with Tobit, Judith, Wisdom of Solomon, Sirach, Baruch, 1–4 Maccabees, 1 Esdras, the Prayer of Manasseh, Susanna and Bel and the Dragon (books like 1 Samuel show their Orthodox names, "1 Kingdoms"), then the 27 books of the New Testament
+  - Bible in the Eastern Orthodox canon and order: the Old Testament following the Septuagint, with Tobit, Judith, Wisdom of Solomon, Sirach, Baruch, 1–4 Maccabees, 1 Esdras, the Prayer of Manasseh, Susanna and Bel and the Dragon (books like 1 Samuel show their Orthodox names, "1 Kingdoms"), then the 27 books of the New Testament
   - Qur'an, all 114 surahs, in English with the Arabic original
-- **Covers** use each faith's widely recognized symbol: the Star of David, the cross, and the eight-pointed star (Rub el Hizb) that marks sections of the Qur'an
-- **Ask the sand**: type a question and the answer is carved into the sand letter by letter. A gust of wind smooths it away. The sand covers 76 topics, each answered separately for the Tanakh, the Bible and the Qur'an:
+- **The reader:** four text sizes, a bookmark, tap any verse to highlight it, notes for each chapter, read aloud (with the browser's speech), copy the chapter, and previous and next buttons that cross from book to book.
+- **Compare & Learn:** the three side by side on 19 facts in four tabs (Overview, Beliefs, Structure, History), with deeper topics under each.
+- **Learn:** Origins & History, Key Beliefs, Major Differences, Similarities and How They Are Used Today, plus People & Events and Beliefs & Practices pages. Every topic shows what each tradition teaches (76 topics in all).
+- **Study Tools:** Commentary (study questions for 300 chapters and surahs), Maps (12 key places, what each means in each tradition, and a map link), a Timeline of 22 key dates, 30 Key Terms & Definitions, People & Places, and Historical Context for well-known passages.
+- **Reading Plans:** Foundations, a Comparison Plan that reads the shared stories side by side (creation, Noah, Abraham, Joseph, Moses, Mary and Jesus, Jonah, one God), a 30-Day Overview, a 90-Day Deep Study, and a Custom Plan for any book at your own pace. Tick off each reading, or mark it done from the reader.
+- **Ask the sand:** type a question in the search box and the answer is carved into the sand letter by letter. Book and chapter names ("John 3", "Surah 36") also jump straight to the reader. The sand covers 76 topics, each answered separately for the Tanakh, the Bible and the Qur'an:
   - **The books:** how they differ, how old they are, who wrote them, where, original languages and translations, how they're organized, the longest and shortest chapters, first and last words, famous passages, the oldest manuscripts, which books are included, the Gospels, other sacred writings (Talmud, Hadith) and interpretation
   - **People:** God and the names of God, the Holy Spirit, Jesus, Muhammad, the prophets, Abraham, Moses, Noah, Joseph, David and Solomon, Jonah, John the Baptist, Mary, Paul and women in the scriptures
   - **Beliefs:** creation, Satan, angels and jinn, miracles, the Messiah, the end of days, the afterlife, sin and salvation, repentance, free will, suffering, covenant, ethics, peace and war, and how the faiths see each other
   - **Practice:** law, the Ten Commandments, prayer, places of worship and leaders, holy days, the Sabbath, fasting, charity, pilgrimage, holy places, food, money, marriage, funerals, circumcision and baptism, conversion, dress, art, calendars, greetings and followers today
-- **Harder questions**: which books are in one scripture but not another (and why the Tanakh counts 24 books where Protestant Bibles count 39), how the stories the Bible and the Qur'an share are told differently, and the historical context behind a passage ("What is the historical context of Psalm 137?", "Why was Surah 96 revealed?").
-- **Study questions for 300 chapters and surahs**: ask about one of the 100 Bible chapters, 100 Torah chapters or 100 surahs in the *3,000 Scripture Study Questions* workbook ("What ethical choices arise in Genesis 12?", "Who are the key people in Exodus 3 in the Torah?", "What are the main themes of Surah Al-Mulk?"). The sand explains how to approach that kind of question (main idea, people, God and humanity, ethics, setting, key words, conflict, connections, interpretations or a hard question), suggests more questions to explore, and links to the passage on Bible Gateway, Sefaria or Quran.com. The workbook's suggested answers are study methods rather than summaries, so the sand doesn't claim to say what each chapter contains.
-- **Compare any two or all three**: name books or faiths in a question ("How do the Bible and the Qur'an see Jesus?", "What does Judaism teach about the afterlife?") and the answer covers only those. Ask about a book with no topic ("Tell me about the Torah") and the sand describes it.
-- **Side-by-side table**: compare the books on 19 facts, including age, language, size, authors, region, central figure, holy day and followers
-- **Eight languages**: a picker in the top corner switches the whole site between English, Spanish, French, German, Hebrew, Arabic, Greek and Latin. That covers the page text, all 76 sand answers, the passage backgrounds, the study guide and the comparison table, and you can ask questions in the language you picked ("¿Qué dice el Corán sobre Jesús?", "מה ההקשר ההיסטורי של תהלים 137?"). Hebrew and Arabic switch the layout to right-to-left, and the sand writes from right to left. Your choice is remembered.
-- Works on phones, supports reduced-motion settings, and screen readers get the answer as text
+- **Harder questions**: which books are in one scripture but not another, how the stories the Bible and the Qur'an share are told differently, and the historical context behind a passage ("What is the historical context of Psalm 137?", "Why was Surah 96 revealed?").
+- **Favorites & Notes:** your bookmarks, highlights and notes in one place, plus settings: light, dark or match your device, and optional desert ambience music.
+- **Eight languages**: English, Spanish, French, German, Hebrew, Arabic, Greek and Latin, chosen from the language menu or the Languages page. The answers, passages, study guide and comparison table are translated, and you can ask questions in the language you picked. Hebrew and Arabic switch the layout to right-to-left. Some of the newest page labels are still in English in the other languages.
+- Saved on your device only, works on phones and computers, supports reduced-motion settings, and screen readers get every answer as text.
+
+Older links still work: `?book=Psalms&chapter=23` (or `?read=tanakh` / `?read=quran`) opens the reader at that chapter. Inside the app, every page has its own link, such as `#reader/bible/John/3`.
 
 ## Where the texts come from
 
@@ -84,16 +89,21 @@ The address updates as you turn pages, so a chapter can be shared as it is. A ch
 | [`src/answers.js`](src/answers.js) | Question matcher: normalizes spellings (Koran → Qur'an), stems words (prophets → prophet), detects which books a question names, scores topics (specific keywords outweigh general ones) and builds the answer |
 | [`src/facts.js`](src/facts.js) | The facts in the side-by-side comparison table |
 | [`src/sand.js`](src/sand.js) | Canvas animation that writes text as grooves in the sand, with flying grains and a wind-sweep effect |
+| [`src/music.js`](src/music.js) | Optional desert ambience, generated in the browser |
 | [`src/i18n.js`](src/i18n.js) | The language list, the English page text, and lookups that use the chosen language's pack, falling back to English |
 | [`src/lang/`](src/lang) | One pack per language: page text, book names, all 76 topics, passages, facts, study guide, and the local words the question matcher listens for |
 | [`src/text.js`](src/text.js) | Normalizes questions in any language (accents, Greek final sigma, Arabic letter forms, Hebrew and Arabic prefixes) and maps local book names to English |
-| [`src/app.js`](src/app.js) | Book reader (with caching), question form and page wiring |
+| [`src/app.js`](src/app.js) | Every page (home, read, reader, compare, learn, tools, plans, languages, favorites, ask), hash routing, theme and language menus |
+| [`src/learn.js`](src/learn.js) | How the 76 topics group into Learn, People & Events, Beliefs & Practices and the Compare tabs |
+| [`src/tools.js`](src/tools.js) | Key terms, places, the timeline and the reading plans |
+| [`src/store.js`](src/store.js) | Where you stopped, bookmarks, highlights, notes, plan progress and settings, saved in the browser |
+| [`src/ui-text.js`](src/ui-text.js) | English text for the pages; language packs can translate any of it |
 
 ## Run it
 
 ```bash
 python3 -m http.server 8000      # then open http://localhost:8000 (needs internet to load the texts)
-npm test                         # 29 tests, including 131 sample English questions and samples in every language routed to the right topic and books
+npm test                         # 32 tests, including 131 sample English questions and samples in every language routed to the right topic and books
 ```
 
 It can also be published for free with GitHub Pages (Settings → Pages → deploy from the `main` branch).

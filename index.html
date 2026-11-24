@@ -2,164 +2,92 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>SuperBook</title>
   <meta name="description" content="Read the Tanakh, the Bible and the Qur'an side by side, and ask how they differ.">
+  <meta name="theme-color" content="#14213d">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Epic desert at dusk: original artwork in the spirit of classic animated Egyptian epics -->
-  <div class="scene" aria-hidden="true">
-    <div class="sky"></div>
-    <div class="rays"></div>
-    <div class="sun"></div>
-    <svg class="land" viewBox="0 0 1440 640" preserveAspectRatio="xMidYMax slice">
-      <defs>
-        <linearGradient id="nile" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#ffcf7a"/><stop offset=".45" stop-color="#e0703a"/><stop offset="1" stop-color="#5b2340"/>
-        </linearGradient>
-        <linearGradient id="dune1" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#e79b55"/><stop offset="1" stop-color="#b8612f"/>
-        </linearGradient>
-        <linearGradient id="dune2" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#f0b46a"/><stop offset="1" stop-color="#d48a47"/>
-        </linearGradient>
-        <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#ffb070" stop-opacity="0"/><stop offset="1" stop-color="#ffb070" stop-opacity=".55"/>
-        </linearGradient>
-      </defs>
-      <!-- distant cliffs -->
-      <path fill="#7a3550" d="M0 330 L90 300 L170 318 L260 280 L330 300 L420 270 L470 296 L560 286 L600 300 L0 300 Z M0 300 L0 360 L600 360 L600 300 Z"/>
-      <path fill="#86405a" d="M880 300 L960 270 L1040 292 L1120 262 L1200 288 L1290 266 L1380 296 L1440 284 L1440 360 L880 360 Z"/>
-      <!-- pyramids, far and near -->
-      <path fill="#9a4a5e" d="M150 352 L265 238 L380 352 Z"/><path fill="#7e3a50" d="M265 238 L380 352 L300 352 Z"/>
-      <path fill="#a4566a" d="M330 352 L410 272 L490 352 Z"/><path fill="#88445a" d="M410 272 L490 352 L436 352 Z"/>
-      <path fill="#91475d" d="M1030 352 L1180 202 L1330 352 Z"/><path fill="#743248" d="M1180 202 L1330 352 L1225 352 Z"/>
-      <!-- temple colonnade and obelisks -->
-      <g fill="#5e2442">
-        <rect x="560" y="300" width="300" height="56"/><rect x="548" y="290" width="324" height="14"/>
-        <rect x="574" y="304" width="14" height="52" fill="#4c1b37"/><rect x="612" y="304" width="14" height="52" fill="#4c1b37"/>
-        <rect x="650" y="304" width="14" height="52" fill="#4c1b37"/><rect x="756" y="304" width="14" height="52" fill="#4c1b37"/>
-        <rect x="794" y="304" width="14" height="52" fill="#4c1b37"/><rect x="832" y="304" width="14" height="52" fill="#4c1b37"/>
-        <path d="M688 356 L688 262 L732 262 L732 356 Z"/><path d="M680 262 L740 262 L728 246 L692 246 Z"/>
-        <path d="M520 356 L526 214 L532 204 L538 214 L544 356 Z"/><path d="M890 356 L896 196 L902 186 L908 196 L914 356 Z"/>
-      </g>
-      <!-- haze over the horizon -->
-      <rect x="0" y="250" width="1440" height="110" fill="url(#haze)"/>
-      <!-- the Nile, catching the sunset -->
-      <path fill="url(#nile)" d="M0 362 C 240 352 420 372 640 364 C 860 356 1100 372 1440 360 L1440 402 C 1120 414 880 396 640 404 C 420 412 220 396 0 406 Z"/>
-      <path fill="#fff1c4" opacity=".55" d="M960 372 h120 v3 h-120z M940 382 h170 v3 h-170z M975 392 h95 v2 h-95z"/>
-      <!-- palms along the river -->
-      <g fill="#3d1530">
-        <path d="M120 404 q6 -46 2 -78 l5 0 q4 34 -1 78z"/><path d="M124 328 q-30 -6 -48 8 q26 -2 48 -4z M124 328 q30 -10 50 4 q-24 -2 -50 -2z M124 328 q-14 -22 -36 -24 q18 10 34 26z M124 328 q16 -20 38 -18 q-20 6 -36 20z"/>
-        <path d="M196 404 q4 -36 0 -60 l4 0 q4 26 0 60z"/><path d="M198 344 q-24 -4 -38 6 q20 -2 38 -3z M198 344 q24 -8 40 4 q-20 -2 -40 -1z M198 344 q-10 -18 -28 -20 q14 8 26 22z"/>
-        <path d="M1300 404 q-6 -44 -1 -72 l5 0 q-3 32 2 72z"/><path d="M1302 334 q-28 -6 -46 8 q24 -2 46 -4z M1302 334 q28 -10 48 4 q-22 -2 -48 -2z M1302 334 q-12 -22 -34 -24 q18 10 32 26z M1302 334 q16 -20 36 -18 q-18 6 -34 20z"/>
-      </g>
-      <!-- ibises crossing the sun -->
-      <g fill="none" stroke="#4a1b34" stroke-width="2.4" stroke-linecap="round">
-        <path d="M1010 150 q10 -8 20 0 q10 -8 20 0"/><path d="M1060 128 q8 -6 16 0 q8 -6 16 0"/><path d="M968 176 q7 -5 14 0 q7 -5 14 0"/>
-      </g>
-      <!-- dunes in the foreground -->
-      <path fill="url(#dune1)" d="M0 420 C 200 384 380 430 600 410 C 820 390 1000 440 1200 414 C 1320 398 1400 410 1440 404 L1440 640 L0 640 Z"/>
-      <path fill="url(#dune2)" d="M0 470 C 240 436 420 486 700 462 C 960 440 1160 492 1440 456 L1440 640 L0 640 Z"/>
-      <path fill="#c97a3c" opacity=".35" d="M700 462 C 960 440 1160 492 1440 456 L1440 476 C 1160 510 960 462 700 478 Z"/>
-    </svg>
-    <div class="dust"></div>
+  <!-- Line icons used across the app, drawn for SuperBook -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5V20h-5.5v-5h-5v5H4z"/></symbol>
+      <symbol id="i-book" viewBox="0 0 24 24"><path d="M3 6.5c3-1.4 6-1.4 9 .5 3-1.9 6-1.9 9-.5V19c-3-1.4-6-1.4-9 .5-3-1.9-6-1.9-9-.5zM12 7v12.5"/></symbol>
+      <symbol id="i-scales" viewBox="0 0 24 24"><path d="M12 4v16M7 20h10M5 7h14M5 7l-3 7a3.2 3.2 0 0 0 6 0zM19 7l-3 7a3.2 3.2 0 0 0 6 0zM12 4a1.4 1.4 0 1 0 0 .1"/></symbol>
+      <symbol id="i-cap" viewBox="0 0 24 24"><path d="M12 5 2.5 9.5 12 14l9.5-4.5zM6 11.5v4c0 1.5 2.7 3 6 3s6-1.5 6-3v-4M21.5 9.5V15"/></symbol>
+      <symbol id="i-map" viewBox="0 0 24 24"><path d="m3 7 6-3 6 3 6-3v13l-6 3-6-3-6 3zM9 4v13M15 7v13"/></symbol>
+      <symbol id="i-people" viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="16.5" cy="9" r="2.5"/><path d="M2.5 19c.6-3.4 2.8-5 5.5-5s4.9 1.6 5.5 5M13.5 14.6c.9-.4 1.9-.6 3-.6 2.4 0 4.3 1.4 5 4.5"/></symbol>
+      <symbol id="i-temple" viewBox="0 0 24 24"><path d="M3 9.5 12 4l9 5.5zM5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/></symbol>
+      <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.4 3.8 5.2 3.8 8.5s-1.2 6.1-3.8 8.5c-2.6-2.4-3.8-5.2-3.8-8.5s1.2-6.1 3.8-8.5z"/></symbol>
+      <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4M8 13.5h2M14 13.5h2M8 16.5h2M14 16.5h2"/></symbol>
+      <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M7 3.5h10v17l-5-4-5 4z"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5.5 5.5"/></symbol>
+      <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15zM10 20.5h4"/></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c.8-4 3.8-6 7.5-6s6.7 2 7.5 6"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+      <symbol id="i-tools" viewBox="0 0 24 24"><path d="m4 20 7-7M14.5 3.5a4.5 4.5 0 0 0-3.7 6.3L9.5 11l3.5 3.5 1.2-1.3a4.5 4.5 0 0 0 6.3-3.7l-2.8 2.8-3-.5-.5-3z"/></symbol>
+      <symbol id="i-learn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5l3 2"/></symbol>
+      <symbol id="i-scroll" viewBox="0 0 24 24"><path d="M6 4h11a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2zM6 4a2 2 0 0 0-2 2v2h2M9.5 8.5h6M9.5 12h6M9.5 15.5h4"/></symbol>
+      <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14zM5 19l7-7"/></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></symbol>
+      <symbol id="i-timeline" viewBox="0 0 24 24"><path d="M3 12h18"/><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/><path d="M6 10V6M12 14v4M18 10V6"/></symbol>
+      <symbol id="i-az" viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M7 15l2.5-6 2.5 6M7.8 13h3.4M14 9h3.5L14 15h3.5"/></symbol>
+      <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20h16M6 16l4-5 3 3 5-7M15 7h3v3"/></symbol>
+      <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+      <symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m10 8.5 5.5 3.5-5.5 3.5z"/></symbol>
+      <symbol id="i-stop" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M9.5 9.5h5v5h-5z"/></symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="12" rx="1.5"/><path d="M5 16V5.5A1.5 1.5 0 0 1 6.5 4H15"/></symbol>
+      <symbol id="i-left" viewBox="0 0 24 24"><path d="m14.5 6-6 6 6 6"/></symbol>
+      <symbol id="i-right" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></symbol>
+      <symbol id="i-text" viewBox="0 0 24 24"><path d="M3 18l4.5-11L12 18M4.6 14h5.8M14 18l3-7 3 7M15 15.8h4"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.5A7.5 7.5 0 1 1 9.5 4.5a6 6 0 0 0 10 10z"/></symbol>
+      <!-- the three scriptures' symbols -->
+      <symbol id="s-tanakh" viewBox="0 0 100 100"><polygon points="50,8 86,71 14,71"/><polygon points="50,92 14,29 86,29"/></symbol>
+      <symbol id="s-bible" viewBox="0 0 100 100"><path d="M43 8h14v24h20v14H57v46H43V46H23V32h20z"/></symbol>
+      <symbol id="s-quran" viewBox="0 0 100 100"><path d="M58 14a38 38 0 1 0 0 72 30 30 0 1 1 0-72z"/><path d="m74 34 4.7 9.6 10.6 1.5-7.7 7.5 1.8 10.5-9.4-5-9.4 5 1.8-10.5-7.7-7.5 10.6-1.5z"/></symbol>
+    </defs>
+  </svg>
+
+  <a class="skip" href="#view">Skip to content</a>
+
+  <aside class="sidebar" id="sidebar" aria-label="SuperBook">
+    <a class="brand" href="#home" aria-label="SuperBook home">
+      <img src="logo.svg" alt="" width="96" height="78">
+      <span class="brand-name">SuperBook</span>
+      <span class="brand-tag" data-i18n="brandTag">Three Scriptures. Shared History. Deeper Understanding.</span>
+    </a>
+    <nav class="side-nav" id="sideNav" aria-label="Main"></nav>
+    <a class="daily" id="daily" href="#home"></a>
+  </aside>
+  <div class="scrim" id="scrim" hidden></div>
+
+  <div class="shell">
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="sidebar"><svg><use href="#i-menu"/></svg></button>
+      <h1 class="page-title" id="pageTitle">SuperBook</h1>
+      <form class="search" id="searchForm" role="search">
+        <svg aria-hidden="true"><use href="#i-search"/></svg>
+        <input id="search" type="search" autocomplete="off" placeholder="Search scriptures, topics, people, or keywords…" aria-label="Search or ask a question" data-i18n-placeholder="searchPlaceholder" data-i18n-aria-label="searchLabel">
+      </form>
+      <div class="lang-menu">
+        <button class="lang-btn" id="langBtn" aria-haspopup="listbox" aria-expanded="false"><svg aria-hidden="true"><use href="#i-globe"/></svg><span id="langName">English (EN)</span></button>
+        <ul class="lang-list" id="langList" role="listbox" hidden></ul>
+      </div>
+      <a class="icon-btn" href="#plans" aria-label="Reading plans" data-i18n-aria-label="nav.plans"><svg><use href="#i-bell"/></svg></a>
+      <a class="icon-btn" href="#favorites" aria-label="Favorites and notes" data-i18n-aria-label="nav.favorites"><svg><use href="#i-user"/></svg></a>
+    </header>
+
+    <main id="view" tabindex="-1"></main>
+
+    <footer class="foot">
+      <p data-i18n="footNote">Texts are public-domain translations loaded from Sefaria, bible-api.com, getbible.net and alquran.cloud. Overviews are simplified; beliefs and practices vary within each tradition.</p>
+    </footer>
   </div>
 
-  <label class="lang-picker"><span class="globe" aria-hidden="true">🌐</span><span class="visually-hidden" data-i18n="language">Language</span>
-    <select id="lang" aria-label="Language"></select>
-  </label>
-
-  <button id="music" class="music-toggle" aria-pressed="false" title="Play calm desert ambience" data-i18n-title="musicTitle">
-    <span class="music-icon" aria-hidden="true">♪</span> <span class="label">Music off</span>
-  </button>
-
-  <header>
-    <h1>SuperBook</h1>
-    <p data-i18n="tagline">Three sacred books of the Abrahamic faiths. Open a book to read it, ask the sand a question, or compare them side by side.</p>
-  </header>
-
-  <main>
-    <section class="shelf" aria-label="Books" data-i18n-aria-label="books">
-      <button class="book tanakh" data-book="tanakh" aria-label="Open the Tanakh">
-        <span class="spine"></span>
-        <svg class="emblem" viewBox="0 0 100 100" aria-hidden="true">
-          <polygon points="50,8 86,71 14,71" /><polygon points="50,92 14,29 86,29" />
-        </svg>
-        <span class="title" data-i18n="book.tanakh">Tanakh</span>
-        <span class="faith" data-i18n="faith.tanakh">Judaism</span>
-      </button>
-
-      <button class="book bible" data-book="bible" aria-label="Open the Holy Bible">
-        <span class="spine"></span>
-        <svg class="emblem" viewBox="0 0 100 100" aria-hidden="true">
-          <path d="M43 8 h14 v24 h20 v14 h-20 v46 h-14 v-46 h-20 v-14 h20 z" />
-        </svg>
-        <span class="title" data-i18n="book.bible">Holy Bible</span>
-        <span class="faith" data-i18n="faith.bible">Christianity</span>
-      </button>
-
-      <button class="book quran" data-book="quran" aria-label="Open the Qur'an">
-        <span class="spine"></span>
-        <svg class="emblem" viewBox="0 0 100 100" aria-hidden="true">
-          <rect x="22" y="22" width="56" height="56" /><rect x="22" y="22" width="56" height="56" transform="rotate(45 50 50)" />
-          <circle cx="50" cy="50" r="10" />
-        </svg>
-        <span class="title" data-i18n="book.quran">Qur'an</span>
-        <span class="faith" data-i18n="faith.quran">Islam</span>
-      </button>
-    </section>
-
-    <section class="ask" aria-labelledby="askTitle">
-      <h2 id="askTitle" data-i18n="askTitle">Ask the sand</h2>
-      <form id="askForm">
-        <input id="question" type="text" placeholder="Ask anything, e.g. How do the Bible and the Qur'an see Jesus?" autocomplete="off" aria-label="Your question" data-i18n-placeholder="askPlaceholder" data-i18n-aria-label="askLabel">
-        <button type="submit" data-i18n="askButton">Ask</button>
-      </form>
-      <button id="compareToggle" class="compare-toggle" aria-expanded="false" aria-controls="compare" data-i18n="compareToggle">Compare the books side by side</button>
-    </section>
-
-    <section id="compare" class="compare" hidden aria-labelledby="compareTitle">
-      <h2 id="compareTitle" data-i18n="compareTitle">The books side by side</h2>
-      <fieldset class="pick">
-        <legend data-i18n="compareShow">Show</legend>
-        <label><input type="checkbox" value="tanakh" checked> <span data-i18n="short.tanakh">Tanakh</span></label>
-        <label><input type="checkbox" value="bible" checked> <span data-i18n="short.bible">Bible</span></label>
-        <label><input type="checkbox" value="quran" checked> <span data-i18n="short.quran">Qur'an</span></label>
-      </fieldset>
-      <div id="facts" class="facts" role="table" aria-label="Comparison of the three books" data-i18n-aria-label="compareTable"></div>
-      <p class="note" data-i18n="compareNote">Rounded figures. Ask the sand for more detail on any row.</p>
-    </section>
-
-    <section id="sandWrap" class="sand-wrap" hidden>
-      <canvas id="sand" aria-hidden="true"></canvas>
-      <p id="spoken" class="visually-hidden" aria-live="polite"></p>
-      <a id="sourceLink" class="source-link" target="_blank" rel="noopener" hidden></a>
-      <button id="smooth" class="smooth" data-i18n="smooth">Let the wind smooth the sand</button>
-      <p class="note" data-i18n="sandNote">Simplified overview. Beliefs and practices vary within each tradition.</p>
-    </section>
-  </main>
-
-  <dialog id="reader" class="reader">
-    <div class="page">
-      <header class="reader-head">
-        <div>
-          <h2 id="readerTitle"></h2>
-          <p id="readerFaith" class="muted"></p>
-        </div>
-        <button id="close" class="close" aria-label="Close book" data-i18n-aria-label="closeBook">✕</button>
-      </header>
-      <nav class="reader-nav">
-        <label><span id="sectionLabel">Book</span> <select id="section"></select></label>
-        <label id="chapterWrap"><span data-i18n="chapter">Chapter</span> <select id="chapter"></select></label>
-        <label id="originalWrap" class="toggle"><input type="checkbox" id="original" checked> <span data-i18n="original">Original language</span></label>
-        <span class="arrows"><button id="prev" aria-label="Previous" data-i18n-aria-label="previous">‹</button><button id="next" aria-label="Next" data-i18n-aria-label="next">›</button></span>
-      </nav>
-      <article id="verses" class="verses"></article>
-      <footer id="credit" class="credit"></footer>
-    </div>
-  </dialog>
+  <nav class="bottom-nav" id="bottomNav" aria-label="Main"></nav>
 
   <script type="module" src="src/app.js"></script>
 </body>

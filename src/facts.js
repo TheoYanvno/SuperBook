@@ -18,5 +18,5 @@ export const FACTS = [
   { label: 'Holiest city', tanakh: 'Jerusalem', bible: 'Jerusalem', quran: 'Mecca' },
   { label: 'Followers today', tanakh: 'About 16 million', bible: 'About 2.4 billion', quran: 'About 2 billion' },
   { label: 'Oldest copies', tanakh: 'Dead Sea Scrolls (from about 250 BCE)', bible: 'New Testament papyri (2nd century)', quran: 'Birmingham manuscript (568–645 CE)' },
-  { label: 'Cover symbol', tanakh: 'Star of David', bible: 'Cross', quran: 'Rub el Hizb (eight-pointed star)' },
+  { label: 'Cover symbol', tanakh: 'Star of David', bible: 'Cross', quran: 'Crescent and star (the eight-pointed Rub el Hizb marks sections of the text)' },
 ];
